@@ -372,7 +372,7 @@ function addBicycle(table, idx, name, data) { // TODO: update for 2025 season
     "code": "${code_identifier}reset_cycle_time",
     "type": "resetCycleTimeButton"
   }`)
-    idx = addResetCycleTimeButton(table, idx, reset_cycle_time_button_data.name, reset_cycle_time_button_data, code_identifier)
+    //idx = addResetCycleTimeButton(table, idx, reset_cycle_time_button_data.name, reset_cycle_time_button_data, code_identifier)
 
     let source_data;
     if (code_identifier === bicycle_component_identifier + 'a') { // Auton
@@ -670,33 +670,13 @@ function onScoreLocClicked(event) {
             }
         }
 
-        let centerX = event.offsetX
-        let centerY = event.offsetY
-        let y_level = centerY < 80 ? 0 : 1
+        let centerX = event.offsetX;
+        let centerY = event.offsetY;
+        let y_level;
         let x_level;
-        let isTinyBot = false //tiny box
+        let isMirrored = centerX > 150;
 
-        if (38 < centerX && centerX < 78 || 220 < centerX && centerX < 260) {
-            if (50 < centerY && centerY < 100) {
-                x_level = 6
-                isTinyBot = true
-            }
-        }
-        if (!isTinyBot) {
-            if (centerX < 35) {
-                x_level = 0
-            } else if (centerX < 100) {
-                x_level = 1
-            } else if (centerX < 150) {
-                x_level = 2
-            } else if (centerX < 200) {
-                x_level = 3
-            } else if (centerX < 265) {
-                x_level = 4
-            } else {
-                x_level = 5
-            }
-        }
+        //ANTHONY TODO
 
         let scoreloc_component = document.getElementById('canvas' + base)
         scoreloc_component.setAttribute('grid_coords', `${x_level}${y_level}`)
@@ -1705,12 +1685,11 @@ function getData(dataFormat) {
                 alert('Missing Auto Start Position!')
             }
             /*
-            0   4
-            1   5
-            2   6
-            3   7
+            0   3
+            1   4
+            2   5
              */
-            thisFieldValue = (parseInt(field_value.substring(0, 1)) * 4) + parseInt(field_value.substring(1, 2))
+            thisFieldValue = (parseInt(field_value.substring(0, 1)) * 3) + parseInt(field_value.substring(1, 2))
         } else {
             thisFieldValue = thisField.value ? thisField.value.replace(/"/g, '').replace(/;/g, "-") : "";
         }
@@ -1745,7 +1724,7 @@ function getData(dataFormat) {
         zone_ids.push(p)
         targets.push(cycle.target)
         statuses.push(cycle.status)
-        times.push(cycle.time)
+        times.push(0)
     }
     // normal_data;gametimes;sources;zone_ids;targets;statuses;times
     //            |-> cycle data, in array format, delimiter = comma
@@ -2104,10 +2083,10 @@ function onFieldClick(event) {
     let centerY = event.offsetY
     let x_level;
     let field_component = document.getElementById('canvas' + base)
-    if (centerX < 35) {
+    if (centerX < 150) {
         x_level = 0
     } else {
-        if (centerX > 265) {
+        if (centerX > 150) {
             x_level = 1
         } else {
             field_component.removeAttribute('grid_coords')
@@ -2116,14 +2095,12 @@ function onFieldClick(event) {
         }
     }
     let y_level;
-    if (centerY < 34) {
+    if (centerY < 50) {
         y_level = 0
-    } else if (centerY < 70) {
-        y_level = 1
     } else if (centerY < 100) {
-        y_level = 2
+        y_level = 1
     } else {
-        y_level = 3
+        y_level = 2
     }
     field_component.setAttribute('grid_coords', `${x_level}${y_level}`)
     drawFields()

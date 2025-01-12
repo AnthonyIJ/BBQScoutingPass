@@ -1,7 +1,7 @@
 // The guts of the ScoutingPASS application
 
 // === Bicycle & Cycle data ===
-let requiredFields = [/*"e", "m", "l", "r", "s", "t", "as"*/];  // What are these again...?  (Prob from first init. page)
+let requiredFields = ["e", "m", "l", "r", "s", "t", "as"];  // What are these again...?  (Prob from first init. page)
 let prev_cycle_end_time = null
 let cycles = []
 
@@ -31,10 +31,10 @@ class Cycle {
     ['amp_spe', 3]
   ])
 
-  constructor(gametime, source, score_loc, target, status, time) {
+  constructor(gametime, source, shot_from, target, status, time) {
     this.gametime = gametime  // 1=auton, 2=teleop
     this.source = source;      // 0=hp_ground, 1=hp_other, 2=o.g.auton i.e. auton_leftover, 3=ground
-    this.score_loc = score_loc;   // zone_id {xy} format
+    this.shot_from = shot_from;   // zone_id {xy} format
     this.target = target;      // 0=partner, 1=amp, 2=speaker, 3=amplified_speaker
     this.status = status;      // 0=unsuccessful, 1=successful
     this.time = time;
@@ -47,7 +47,7 @@ class Cycle {
     // t = target
     // f = successful?
     // time = {x}y.z
-    return `${this.gametime}${this.source}${this.score_loc}${this.target}${this.status}${this.time}`
+    return `${this.gametime}${this.source}${this.shot_from}${this.target}${this.status}${this.time}`
   }
 
   toString() {
@@ -57,7 +57,12 @@ class Cycle {
 
 // Called on the nextSuccessfulCycle
 function nextSuccessfulCycle(code_identifier) {
-  let cycleText = 'Auton';
+  let cycleText;
+  if (code_identifier.endsWith('a')) {
+    cycleText = 'Auton'
+  } else {
+    cycleText = 'Teleop'
+  }
 
   let undefined_vars = saveCycle(code_identifier, 1)  // TODO: What is this
   if (undefined_vars.length > 0) {  // More than 0 undefined vars
@@ -77,7 +82,12 @@ function nextSuccessfulCycle(code_identifier) {
 
 // Called on the nextFailedCycle
 function nextFailedCycle(code_identifier) {
-  let cycleText = 'Auton';
+  let cycleText;
+  if (code_identifier.endsWith('a')) {
+    cycleText = 'Auton'
+  } else {
+    cycleText = 'Teleop'
+  }
 
   let undefined_vars = saveCycle(code_identifier, 0)
   if (undefined_vars.length > 0) {  // More than 0 undefined vars  // TODO: WHat is this
@@ -109,8 +119,8 @@ function saveCycle(code_identifier, successful) {
     src_value = "x"
   }
 
-  let scoreloc = document.getElementById('canvas_' + code_identifier + 'scoreloc')
-  let scoreloc_value = scoreloc.getAttribute('grid_coords')
+  let shotfrom = document.getElementById('canvas_' + code_identifier + 'shotfrom')
+  let shotfrom_value = shotfrom.getAttribute('grid_coords')
 
   let tar = Form[`${code_identifier}tar`]
   let tar_value = Cycle.target_condense_map.get(tar.value ? tar.value.replace(/"/g, '').replace(/;/g, "-") : "");
@@ -124,8 +134,8 @@ function saveCycle(code_identifier, successful) {
   if (src_value === undefined) {
     undefined_vars.push('\"Source\"')
   }
-  if (scoreloc_value === null || scoreloc_value === 'null') {
-    undefined_vars.push('\"Score Location\"')
+  if (shotfrom_value === null || shotfrom_value === 'null') {
+    undefined_vars.push('\"Shot From Region\"')
   }
   if (tar_value === undefined) {
     undefined_vars.push('\"Target\"')
@@ -145,7 +155,7 @@ function saveCycle(code_identifier, successful) {
   let cycle = new Cycle(
     gametime,
     src_value,
-    scoreloc_value,
+    shotfrom_value,
     tar_value,
     success_value,
     prev_cycle_end_time === 0 ? 0.0 : ((Date.now() - prev_cycle_end_time) / 1000).toFixed(1),
@@ -162,9 +172,9 @@ function clearCycle(code_identifier) {
     e.value = "[]"
   }
 
-  let scoreloc_component = document.getElementById('canvas_' + code_identifier + 'scoreloc')
-  console.log(scoreloc_component)
-  scoreloc_component.setAttribute('grid_coords', null)
+  let shotfrom_component = document.getElementById('canvas_' + code_identifier + 'shotfrom')
+  console.log(shotfrom_component)
+  shotfrom_component.setAttribute('grid_coords', null)
   // inputs = new Set(document.querySelectorAll("[tag='canvas']"));
   // for (let e of inputs) {
   //   if (e.getAttribute('grid_coords') !== undefined && e.getAttribute('grid_coords') !== null) {
@@ -343,10 +353,11 @@ bicycle_component_identifier = 'cycle'
 
 // Add bicycle
 function addBicycle(table, idx, name, data) { // TODO: update for 2025 season
-  let code_identifier = bicycle_component_identifier + 'a';
+  // Is this bicycle the auton or teleop bicycle?
+  let code_identifier = bicycle_component_identifier + ((data.bicycle_id === 'auton') ? 'a' : 't');
 
   // Create the title display (called "break") component for this bicycle component
-  let break_name = 'Auton';
+  let break_name = (data.bicycle_id === 'auton') ? 'Auton' : 'Teleop';
   let break_data = JSON.parse(`{
             "name": "${break_name} Cycle Form:",
             "code": "${code_identifier}break",
@@ -361,10 +372,11 @@ function addBicycle(table, idx, name, data) { // TODO: update for 2025 season
     "code": "${code_identifier}reset_cycle_time",
     "type": "resetCycleTimeButton"
   }`)
-  //idx = addResetCycleTimeButton(table, idx, reset_cycle_time_button_data.name, reset_cycle_time_button_data, code_identifier)
+  idx = addResetCycleTimeButton(table, idx, reset_cycle_time_button_data.name, reset_cycle_time_button_data, code_identifier)
 
   let source_data;
-  source_data = JSON.parse(`{ 
+  if (code_identifier === bicycle_component_identifier + 'a') { // Auton
+    source_data = JSON.parse(`{ 
      "name": "Source",
      "code": "${code_identifier}src",
      "type": "radio",
@@ -380,19 +392,36 @@ function addBicycle(table, idx, name, data) { // TODO: update for 2025 season
       "c5": "C5"
      },
      "defaultValue": "pl"
-  }`)
-  idx = addRadio(table, idx, source_data.name, source_data) // Source
+     }`)
+  } else {  // Teleop intake
+    source_data = JSON.parse(`{ 
+     "name": "Source",
+     "code": "${code_identifier}src",
+     "type": "radio",
+     "choices": {
+      "hpg": "HP Ground<br>",
+      "hpo": "HP (other)<br>",
+      "oga": "O.G. Auton<br>",
+      "g": "Ground<br>",
+      "ap": "Alliance Partner"
+     },
+     "defaultValue": "hpg"
+     }`)
+  }
+  if (code_identifier === bicycle_component_identifier + 'a') {
+    idx = addRadio(table, idx, source_data.name, source_data) // Source
+  }
 
-  // Add score location component
-  let score_loc_data = JSON.parse(`{
-      "name": "Score Location:",
-      "code": "${code_identifier}scoreloc",
-      "type": "scoreloc",
-      "filename": "2025/field_image.png",
+  // Add shot from component
+  let shot_from_data = JSON.parse(`{
+      "name": "Shot From Region:",
+      "code": "${code_identifier}shotfrom",
+      "type": "shotfrom",
+      "filename": "2024/field_image.png",
       "clickRestriction": "one",
       "shape": "rect 4 white orangered true"
   }`)
-  idx = addscoreloc(table, idx, score_loc_data.name, score_loc_data)
+  idx = addShotFrom(table, idx, shot_from_data.name, shot_from_data)
 
   // add target data component
   let target_data = JSON.parse(`
@@ -430,8 +459,8 @@ function addBicycle(table, idx, name, data) { // TODO: update for 2025 season
   return idx
 }
 
-// Add Score Location Component
-function addscoreloc(table, idx, name, data) {
+// Add Shot From Component
+function addShotFrom(table, idx, name, data) {
   let row = table.insertRow(idx);
   let cell = row.insertCell(0);
   cell.setAttribute("colspan", 2);
@@ -500,7 +529,7 @@ function addscoreloc(table, idx, name, data) {
   cell.setAttribute("style", "text-align: center;");
   let canvas = document.createElement('canvas');
   //canvas.onclick = onFieldClick;
-  canvas.setAttribute("onclick", "onScoreLocClicked(event)");
+  canvas.setAttribute("onclick", "onShotFromClicked(event)");
   canvas.setAttribute("class", "field-image-src");
   canvas.setAttribute("id", "canvas_" + data.code);
   canvas.innerHTML = "No canvas support";
@@ -616,8 +645,8 @@ function addscoreloc(table, idx, name, data) {
   return idx + 1
 }
 
-// On Score Location map clicked (2025 season)
-function onScoreLocClicked(event) {
+// On shot from map clicked (2024 season)
+function onShotFromClicked(event) {
   try {
     let target = event.target;
     let base = getIdBase(target.id);
@@ -641,16 +670,36 @@ function onScoreLocClicked(event) {
       }
     }
 
-    let centerX = event.offsetX;
-    let centerY = event.offsetY;
-    let y_level;
+    let centerX = event.offsetX
+    let centerY = event.offsetY
+    let y_level = centerY < 80 ? 0 : 1
     let x_level;
-    let isMirrored = centerX > 150;
+    let isTinyBot = false //tiny box
 
-    //ANTHONY TODO
+    if (38 < centerX && centerX < 78 || 220 < centerX && centerX < 260) {
+      if (50 < centerY && centerY < 100) {
+        x_level = 6
+        isTinyBot = true
+      }
+    }
+    if (!isTinyBot) {
+      if (centerX < 35) {
+        x_level = 0
+      } else if (centerX < 100) {
+        x_level = 1
+      } else if (centerX < 150) {
+        x_level = 2
+      } else if (centerX < 200) {
+        x_level = 3
+      } else if (centerX < 265) {
+        x_level = 4
+      } else {
+        x_level = 5
+      }
+    }
 
-    let scoreloc_component = document.getElementById('canvas' + base)
-    scoreloc_component.setAttribute('grid_coords', `${x_level}${y_level}`)
+    let shotfrom_component = document.getElementById('canvas' + base)
+    shotfrom_component.setAttribute('grid_coords', `${x_level}${y_level}`)
 
     //Cumulating values
     let changingXY = document.getElementById("XY" + base);
@@ -1656,11 +1705,12 @@ function getData(dataFormat) {
         alert('Missing Auto Start Position!')
       }
       /*
-      0   3
-      1   4
-      2   5
+      0   4
+      1   5
+      2   6
+      3   7
        */
-      thisFieldValue = (parseInt(field_value.substring(0, 1)) * 3) + parseInt(field_value.substring(1, 2))
+      thisFieldValue = (parseInt(field_value.substring(0, 1)) * 4) + parseInt(field_value.substring(1, 2))
     } else {
       thisFieldValue = thisField.value ? thisField.value.replace(/"/g, '').replace(/;/g, "-") : "";
     }
@@ -1681,9 +1731,9 @@ function getData(dataFormat) {
   let times = []
   for (let i = 0; i < cycles.length; i++) {
     let cycle = cycles[i]
-    gametimes.push(0)
+    gametimes.push(cycle.gametime)
     sources.push(cycle.source)
-    let p = parseInt(cycle.score_loc.substring(0, 1))
+    let p = parseInt(cycle.shot_from.substring(0, 1))
     if (p !== 6) {  // Not a tiny box thingy
       if (Form['r'].value.startsWith('r')) {
         p = 5 - p
@@ -1695,7 +1745,7 @@ function getData(dataFormat) {
     zone_ids.push(p)
     targets.push(cycle.target)
     statuses.push(cycle.status)
-    times.push(0)
+    times.push(cycle.time)
   }
   // normal_data;gametimes;sources;zone_ids;targets;statuses;times
   //            |-> cycle data, in array format, delimiter = comma
@@ -1884,63 +1934,72 @@ function drawFields(name) {
         ctx.beginPath();
         let drawType = shapeArr[0].toLowerCase()
         if (drawType === 'circle') {  // Should only be for auton start pos {Circle: ctx.arc(centerX, centerY, shapeArr[1], 0, 2 * Math.PI, false);}
-          let x_level = centerX < 150 && centerX >= 130 ? 130 : (centerX > 150 && centerX <= 170 ? 150 : -1);
+          let x_level = centerX < 35 ? 0 : (centerX > 265 ? 265 : -1);
+          let width = 33;
           let y_level;
+          let height;
           if (x_level === -1) { continue; }
-          if (centerY < 50) {
+          if (centerY < 34) {
             y_level = 0
+            height = 34
+          } else if (centerY < 70) {
+            y_level = 34
+            height = 30
           } else if (centerY < 100) {
-            y_level = 50
+            y_level = 74
+            height = 30
           } else {
             y_level = 100
+            height = 50
           }
-          ctx.rect(x_level, y_level, 20, 50);
+          ctx.rect(x_level, y_level, width, height);
         } else if (drawType === 'rect') {
           try {
+            let y_level = 0
+            let height = 160
             let x_level = 0;
-            let y_level = 0;
-            let sideLength = 20;
-
-            //sorry alx ;-;
-            if (withinBounds(centerX, centerY, 91, 65, sideLength)) {
-              ctx.rect(91, 65, sideLength, sideLength);
-
-            } else if (withinBounds(centerX, centerY, 42, 65, sideLength)) {
-              ctx.rect(42, 65, sideLength, sideLength);
-
-            } else if (withinBounds(centerX, centerY, 238, 65, sideLength)) {
-              ctx.rect(238, 65, sideLength, sideLength);
-
-            } else if (withinBounds(centerX, centerY, 189, 65, sideLength)) {
-              ctx.rect(189, 65, sideLength, sideLength);
-
-            } else if (withinBounds(centerX, centerY, 78, 45, sideLength)) {
-              ctx.rect(78, 45, sideLength, sideLength);
-
-            } else if (withinBounds(centerX, centerY, 58, 45, sideLength)) {
-              ctx.rect(58, 45, sideLength, sideLength);
-
-            } else if (withinBounds(centerX, centerY, 223, 45, sideLength)) {
-              ctx.rect(223, 45, sideLength, sideLength);
-
-            } else if (withinBounds(centerX, centerY, 202, 45, sideLength)) {
-              ctx.rect(202, 45, sideLength, sideLength);
-
-            } else if (withinBounds(centerX, centerY, 78, 85, sideLength)) {
-              ctx.rect(78, 85, sideLength, sideLength);
-
-            } else if (withinBounds(centerX, centerY, 58, 85, sideLength)) {
-              ctx.rect(58, 85, sideLength, sideLength);
-
-            } else if (withinBounds(centerX, centerY, 223, 85, sideLength)) {
-              ctx.rect(223, 85, sideLength, sideLength);
-
-            } else if (withinBounds(centerX, centerY, 202, 85, sideLength)) {
-              ctx.rect(202, 85, sideLength, sideLength);
-
+            let width = 0;
+            // Tiny zone calculation stuff in methods: drawFields, onShotFromClicked
+            let isTinyBot = false //tiny box
+            if (50 < centerY && centerY < 100) {
+              if (38 < centerX && centerX < 78) {
+                x_level = 38
+                width = 40
+                y_level = 50
+                height = 50
+                isTinyBot = true
+              } else if (220 < centerX && centerX < 260) {
+                x_level = 220
+                width = 40
+                y_level = 50
+                height = 50
+                isTinyBot = true
+              } else {
+                isTinyBot = false
+              }
             }
-
-
+            if (!isTinyBot) {
+              if (centerX < 35) {
+                x_level = 0
+                width = 34
+              } else if (centerX < 100) {
+                x_level = 34
+                width = 69
+              } else if (centerX < 150) {
+                x_level = 100
+                width = 48
+              } else if (centerX < 200) {
+                x_level = 150
+                width = 43
+              } else if (centerX < 265) {
+                x_level = 193
+                width = 70
+              } else {
+                x_level = 266
+                width = 34
+              }
+            }
+            ctx.rect(x_level, y_level, width, height);
           } catch (e) {
             alert(e)
           }
@@ -1966,11 +2025,6 @@ function drawFields(name) {
       }
     }
   }
-}
-
-
-function withinBounds(x, y, minX, minY, length) {
-  return (minX <= x && x <= minX + length) && (minY <= y && y <= minY + length);
 }
 
 // On field click
@@ -2054,10 +2108,10 @@ function onFieldClick(event) {
   let centerY = event.offsetY
   let x_level;
   let field_component = document.getElementById('canvas' + base)
-  if (centerX < 150) {
+  if (centerX < 35) {
     x_level = 0
   } else {
-    if (centerX > 150) {
+    if (centerX > 265) {
       x_level = 1
     } else {
       field_component.removeAttribute('grid_coords')
@@ -2066,12 +2120,14 @@ function onFieldClick(event) {
     }
   }
   let y_level;
-  if (centerY < 50) {
+  if (centerY < 34) {
     y_level = 0
-  } else if (centerY < 100) {
+  } else if (centerY < 70) {
     y_level = 1
-  } else {
+  } else if (centerY < 100) {
     y_level = 2
+  } else {
+    y_level = 3
   }
   field_component.setAttribute('grid_coords', `${x_level}${y_level}`)
   drawFields()
