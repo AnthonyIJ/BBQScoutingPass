@@ -641,33 +641,13 @@ function onScoreLocClicked(event) {
       }
     }
 
-    let centerX = event.offsetX
-    let centerY = event.offsetY
-    let y_level = centerY < 80 ? 0 : 1
+    let centerX = event.offsetX;
+    let centerY = event.offsetY;
+    let y_level;
     let x_level;
-    let isTinyBot = false //tiny box
+    let isMirrored = centerX > 150;
 
-    if (38 < centerX && centerX < 78 || 220 < centerX && centerX < 260) {
-      if (50 < centerY && centerY < 100) {
-        x_level = 6
-        isTinyBot = true
-      }
-    }
-    if (!isTinyBot) {
-      if (centerX < 35) {
-        x_level = 0
-      } else if (centerX < 100) {
-        x_level = 1
-      } else if (centerX < 150) {
-        x_level = 2
-      } else if (centerX < 200) {
-        x_level = 3
-      } else if (centerX < 265) {
-        x_level = 4
-      } else {
-        x_level = 5
-      }
-    }
+    //ANTHONY TODO
 
     let scoreloc_component = document.getElementById('canvas' + base)
     scoreloc_component.setAttribute('grid_coords', `${x_level}${y_level}`)
@@ -1934,29 +1914,29 @@ function drawFields(name) {
             } else if (withinBounds(centerX, centerY, 189, 65, sideLength)) {
               ctx.rect(189, 65, sideLength, sideLength);
 
-            } else if (withinBounds(centerX, centerY, 100, 65, sideLength)) {
-              ctx.rect(100, 65, sideLength, sideLength);
+            } else if (withinBounds(centerX, centerY, 78, 45, sideLength)) {
+              ctx.rect(78, 45, sideLength, sideLength);
 
-            } else if (withinBounds(centerX, centerY, 100, 65, sideLength)) {
-              ctx.rect(100, 65, sideLength, sideLength);
+            } else if (withinBounds(centerX, centerY, 58, 45, sideLength)) {
+              ctx.rect(58, 45, sideLength, sideLength);
 
-            } else if (withinBounds(centerX, centerY, 100, 65, sideLength)) {
-              ctx.rect(100, 65, sideLength, sideLength);
+            } else if (withinBounds(centerX, centerY, 223, 45, sideLength)) {
+              ctx.rect(223, 45, sideLength, sideLength);
 
-            } else if (withinBounds(centerX, centerY, 100, 65, sideLength)) {
-              ctx.rect(100, 65, sideLength, sideLength);
+            } else if (withinBounds(centerX, centerY, 202, 45, sideLength)) {
+              ctx.rect(202, 45, sideLength, sideLength);
 
-            } else if (withinBounds(centerX, centerY, 100, 65, sideLength)) {
-              ctx.rect(100, 65, sideLength, sideLength);
+            } else if (withinBounds(centerX, centerY, 78, 85, sideLength)) {
+              ctx.rect(78, 85, sideLength, sideLength);
 
-            } else if (withinBounds(centerX, centerY, 100, 65, sideLength)) {
-              ctx.rect(100, 65, sideLength, sideLength);
+            } else if (withinBounds(centerX, centerY, 58, 85, sideLength)) {
+              ctx.rect(58, 85, sideLength, sideLength);
 
-            } else if (withinBounds(centerX, centerY, 100, 65, sideLength)) {
-              ctx.rect(100, 65, sideLength, sideLength);
+            } else if (withinBounds(centerX, centerY, 223, 85, sideLength)) {
+              ctx.rect(223, 85, sideLength, sideLength);
 
-            } else if (withinBounds(centerX, centerY, 100, 65, sideLength)) {
-              ctx.rect(100, 65, sideLength, sideLength);
+            } else if (withinBounds(centerX, centerY, 202, 85, sideLength)) {
+              ctx.rect(202, 85, sideLength, sideLength);
 
             }
 
