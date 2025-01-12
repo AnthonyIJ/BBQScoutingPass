@@ -674,9 +674,29 @@ function onScoreLocClicked(event) {
         let centerY = event.offsetY;
         let y_level;
         let x_level;
-        let isMirrored = centerX > 150;
+        
+        if (45 <= centerY && centerY < 65) {
+            y_level = 0;
+        } else if (65 <= centerY && centerY < 85) {
+            y_level = 1;
+        } else if (85 <= centerY && centerY < 105) {
+            y_level = 2;
+        }
 
-        //ANTHONY TODO
+        if ((42 <= centerX && centerX < 62) || (238 <= centerX && centerX < 258)) {
+            x_level = 0;
+        } else if ((58 <= centerX && centerX < 78) || (223 <= centerX && centerX < 243)) {
+            x_level = 1;
+        } else if ((78 <= centerX && centerX < 98) || (202 <= centerX && centerX < 222)) {
+            x_level = 2;
+        } else if ((91 <= centerX && centerX < 111) || (189 <= centerX && centerX < 209)) {
+            x_level = 3;
+        }
+
+        let coord = x_level + '' + y_level;
+        if (!(coord == '01' || coord == '10' || coord == '12' || coord == '20' || coord == '22' || coord == '31')) {
+            return;
+        }
 
         let scoreloc_component = document.getElementById('canvas' + base)
         scoreloc_component.setAttribute('grid_coords', `${x_level}${y_level}`)
@@ -1701,8 +1721,9 @@ function getData(dataFormat) {
     let gametimes = []
     let sources = []
     /* Zone id chart
-    | 0 | 1 | 2 | 3 | 4 | 5 |
-    | 0 |5|1|   2   |3|5| 4 |
+       |f||e|
+    |a|      |d|
+       |b||c|
     */
     let zone_ids = []
     let targets = []
@@ -1712,16 +1733,24 @@ function getData(dataFormat) {
         let cycle = cycles[i]
         gametimes.push(cycle.gametime)
         sources.push(cycle.source)
-        let p = parseInt(cycle.score_loc.substring(0, 1))
-        if (p !== 6) {  // Not a tiny box thingy
-            if (Form['r'].value.startsWith('r')) {
-                p = 5 - p
-            }
+        let zone_id;
+        if (cycle.score_loc == '01') {
+            zone_id = 'a';
+        } else if (cycle.score_loc == '12') {
+            zone_id = 'b';
+        } else if (cycle.score_loc == '22') {
+            zone_id = 'c';
+        } else if (cycle.score_loc == '31') {
+            zone_id = 'd';
+        } else if (cycle.score_loc == '20') {
+            zone_id = 'e';
+        } else if (cycle.score_loc == '10') {
+            zone_id = 'f';
+        } else {
+            alert("invalid score location");
+            zone_id = 'x';
         }
-        if (p >= 3) {
-            p -= 1
-        }
-        zone_ids.push(p)
+        zone_ids.push(zone_id)
         targets.push(cycle.target)
         statuses.push(cycle.status)
         times.push(0)
@@ -1928,44 +1957,43 @@ function drawFields(name) {
                     try {
                         let x_level = 0;
                         let y_level = 0;
-                        let sideLength = 20;
 
                         //sorry alx ;-;
-                        if (withinBounds(centerX, centerY, 91, 65, sideLength)) {
-                            ctx.rect(91, 65, sideLength, sideLength);
+                        if (withinBounds(centerX, centerY, 91, 65, 20)) {
+                            ctx.rect(91, 65, 20, 20);
 
-                        } else if (withinBounds(centerX, centerY, 42, 65, sideLength)) {
-                            ctx.rect(42, 65, sideLength, sideLength);
+                        } else if (withinBounds(centerX, centerY, 42, 65, 20)) {
+                            ctx.rect(42, 65, 20, 20);
 
-                        } else if (withinBounds(centerX, centerY, 238, 65, sideLength)) {
-                            ctx.rect(238, 65, sideLength, sideLength);
+                        } else if (withinBounds(centerX, centerY, 238, 65, 20)) {
+                            ctx.rect(238, 65, 20, 20);
 
-                        } else if (withinBounds(centerX, centerY, 189, 65, sideLength)) {
-                            ctx.rect(189, 65, sideLength, sideLength);
+                        } else if (withinBounds(centerX, centerY, 189, 65, 20)) {
+                            ctx.rect(189, 65, 20, 20);
 
-                        } else if (withinBounds(centerX, centerY, 78, 45, sideLength)) {
-                            ctx.rect(78, 45, sideLength, sideLength);
+                        } else if (withinBounds(centerX, centerY, 78, 45, 20)) {
+                            ctx.rect(78, 45, 20, 20);
 
-                        } else if (withinBounds(centerX, centerY, 58, 45, sideLength)) {
-                            ctx.rect(58, 45, sideLength, sideLength);
+                        } else if (withinBounds(centerX, centerY, 58, 45, 20)) {
+                            ctx.rect(58, 45, 20, 20);
 
-                        } else if (withinBounds(centerX, centerY, 223, 45, sideLength)) {
-                            ctx.rect(223, 45, sideLength, sideLength);
+                        } else if (withinBounds(centerX, centerY, 223, 45, 20)) {
+                            ctx.rect(223, 45, 20, 20);
 
-                        } else if (withinBounds(centerX, centerY, 202, 45, sideLength)) {
-                            ctx.rect(202, 45, sideLength, sideLength);
+                        } else if (withinBounds(centerX, centerY, 202, 45, 20)) {
+                            ctx.rect(202, 45, 20, 20);
 
-                        } else if (withinBounds(centerX, centerY, 78, 85, sideLength)) {
-                            ctx.rect(78, 85, sideLength, sideLength);
+                        } else if (withinBounds(centerX, centerY, 78, 85, 20)) {
+                            ctx.rect(78, 85, 20, 20);
 
-                        } else if (withinBounds(centerX, centerY, 58, 85, sideLength)) {
-                            ctx.rect(58, 85, sideLength, sideLength);
+                        } else if (withinBounds(centerX, centerY, 58, 85, 20)) {
+                            ctx.rect(58, 85, 20, 20);
 
-                        } else if (withinBounds(centerX, centerY, 223, 85, sideLength)) {
-                            ctx.rect(223, 85, sideLength, sideLength);
+                        } else if (withinBounds(centerX, centerY, 223, 85, 20)) {
+                            ctx.rect(223, 85, 20, 20);
 
-                        } else if (withinBounds(centerX, centerY, 202, 85, sideLength)) {
-                            ctx.rect(202, 85, sideLength, sideLength);
+                        } else if (withinBounds(centerX, centerY, 202, 85, 20)) {
+                            ctx.rect(202, 85, 20, 20);
 
                         }
 
