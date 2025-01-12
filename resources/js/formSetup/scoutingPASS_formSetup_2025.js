@@ -8,27 +8,27 @@ let cycles = []
 // Cycle class
 class Cycle {
   static src_condense_map = new Map([
-      ['hpg', 1],
-      ['hpo', 2],
-      ['oga', 3],
-      ['g', 4],
-      ["p1","a"],
-      ["p2","b"],
-      ["p3","c"],
-      ["c1","d"],
-      ["c2","e"],
-      ["c3","f"],
-      ["c4","g"],
-      ["c5","h"],
-      ["pl","p"],// preload
-      ['ap', "5"],// alliance partner
-      ['x', "x"] //no source
+    ['hpg', 1],
+    ['hpo', 2],
+    ['oga', 3],
+    ['g', 4],
+    ["p1", "a"],
+    ["p2", "b"],
+    ["p3", "c"],
+    ["c1", "d"],
+    ["c2", "e"],
+    ["c3", "f"],
+    ["c4", "g"],
+    ["c5", "h"],
+    ["pl", "p"],// preload
+    ['ap', "5"],// alliance partner
+    ['x', "x"] //no source
   ])
   static target_condense_map = new Map([
-        ['par', 0],
-        ['amp', 1],
-        ['spe', 2],
-        ['amp_spe', 3]
+    ['par', 0],
+    ['amp', 1],
+    ['spe', 2],
+    ['amp_spe', 3]
   ])
 
   constructor(gametime, source, score_loc, target, status, time) {
@@ -70,7 +70,7 @@ function nextSuccessfulCycle(code_identifier) {
     alert(e)
   }
   let break_component = document.getElementById(`break_${code_identifier}break`)
-  break_component.setAttribute("nof_cycles", (parseInt(break_component.getAttribute("nof_cycles"))+1).toString())
+  break_component.setAttribute("nof_cycles", (parseInt(break_component.getAttribute("nof_cycles")) + 1).toString())
   break_component.setAttribute("prev_cycle_end_time", Date.now().toString())
   break_component.innerHTML = `${cycleText} Cycle Form (${break_component.getAttribute("nof_cycles")}):` + '&nbsp;';
 }
@@ -90,68 +90,68 @@ function nextFailedCycle(code_identifier) {
     alert(e)
   }
   let break_component = document.getElementById(`break_${code_identifier}break`)
-  break_component.setAttribute("nof_cycles", (parseInt(break_component.getAttribute("nof_cycles"))+1).toString())
+  break_component.setAttribute("nof_cycles", (parseInt(break_component.getAttribute("nof_cycles")) + 1).toString())
   break_component.setAttribute("prev_cycle_end_time", Date.now().toString())
   break_component.innerHTML = `${cycleText} Cycle Form (${break_component.getAttribute("nof_cycles")}):` + '&nbsp;';
 }
 
 // Called on next_Cycle; saves the cycle, returns undefined variables?
 function saveCycle(code_identifier, successful) {
-    let Form = document.forms.scoutingForm;
+  let Form = document.forms.scoutingForm;
 
-    let src;
-    let src_value;
-    if (code_identifier.endsWith('a')) {
-      src = Form[`${code_identifier}src`]
-      src_value = Cycle.src_condense_map.get(src.value ? src.value.replace(/"/g, '').replace(/;/g, "-") : "");  
-    } else {
-      src = "x"
-      src_value = "x"
-    }
-    
-    let scoreloc = document.getElementById('canvas_' + code_identifier + 'scoreloc')
-    let scoreloc_value = scoreloc.getAttribute('grid_coords')
+  let src;
+  let src_value;
+  if (code_identifier.endsWith('a')) {
+    src = Form[`${code_identifier}src`]
+    src_value = Cycle.src_condense_map.get(src.value ? src.value.replace(/"/g, '').replace(/;/g, "-") : "");
+  } else {
+    src = "x"
+    src_value = "x"
+  }
 
-    let tar = Form[`${code_identifier}tar`]
-    let tar_value = Cycle.target_condense_map.get(tar.value ? tar.value.replace(/"/g, '').replace(/;/g, "-") : "");
+  let scoreloc = document.getElementById('canvas_' + code_identifier + 'scoreloc')
+  let scoreloc_value = scoreloc.getAttribute('grid_coords')
 
-    //let success = Form[`${code_identifier}success`]
-    let success_value = successful /*success.checked ? 1 : 0*/;
+  let tar = Form[`${code_identifier}tar`]
+  let tar_value = Cycle.target_condense_map.get(tar.value ? tar.value.replace(/"/g, '').replace(/;/g, "-") : "");
 
-    let gametime = code_identifier.endsWith('a') ? 1 : 2
+  //let success = Form[`${code_identifier}success`]
+  let success_value = successful /*success.checked ? 1 : 0*/;
 
-    let undefined_vars = []
-    if (src_value === undefined) {
-      undefined_vars.push('\"Source\"')
-    }
-    if (scoreloc_value === null || scoreloc_value === 'null') {
-      undefined_vars.push('\"Score Location\"')
-    }
-    if (tar_value === undefined) {
-      undefined_vars.push('\"Target\"')
-    }
-    if (undefined_vars.length > 0) {
-      return undefined_vars
-    }
+  let gametime = code_identifier.endsWith('a') ? 1 : 2
 
-    let break_component = document.getElementById(`break_${code_identifier}break`)
-    let prev_cycle_end_time;
-    if (break_component.hasAttribute("prev_cycle_end_time")) {
-      prev_cycle_end_time = parseInt(break_component.getAttribute("prev_cycle_end_time"))
-    } else {
-      prev_cycle_end_time = 0
-    }
+  let undefined_vars = []
+  if (src_value === undefined) {
+    undefined_vars.push('\"Source\"')
+  }
+  if (scoreloc_value === null || scoreloc_value === 'null') {
+    undefined_vars.push('\"Score Location\"')
+  }
+  if (tar_value === undefined) {
+    undefined_vars.push('\"Target\"')
+  }
+  if (undefined_vars.length > 0) {
+    return undefined_vars
+  }
 
-    let cycle = new Cycle(
-        gametime,
-        src_value,
-        scoreloc_value,
-        tar_value,
-        success_value,
-        prev_cycle_end_time === 0 ? 0.0 : ((Date.now() - prev_cycle_end_time) / 1000).toFixed(1),
-    )
-    cycles.push(cycle)
-    return []
+  let break_component = document.getElementById(`break_${code_identifier}break`)
+  let prev_cycle_end_time;
+  if (break_component.hasAttribute("prev_cycle_end_time")) {
+    prev_cycle_end_time = parseInt(break_component.getAttribute("prev_cycle_end_time"))
+  } else {
+    prev_cycle_end_time = 0
+  }
+
+  let cycle = new Cycle(
+    gametime,
+    src_value,
+    scoreloc_value,
+    tar_value,
+    success_value,
+    prev_cycle_end_time === 0 ? 0.0 : ((Date.now() - prev_cycle_end_time) / 1000).toFixed(1),
+  )
+  cycles.push(cycle)
+  return []
 }
 
 function clearCycle(code_identifier) {
@@ -205,8 +205,8 @@ function clearCycle(code_identifier) {
     } else {
       if (e.type === "number" || e.type === "text" || e.type === "hidden") {
         if ((e.className === "counter") ||
-            (e.className === "timer") ||
-            (e.className === "cycle")) {
+          (e.className === "timer") ||
+          (e.className === "cycle")) {
           e.value = 0
           if (e.className === "timer" || e.className === "cycle") {
             // Stop interval
@@ -321,15 +321,15 @@ function addResetCycleTimeButton(table, idx, name, data, code_identifier) {
     inp.setAttribute("disabled", "");
   }
   cell2.appendChild(inp)
-  setInterval(function() {
-      let break_component = document.getElementById(`break_${code_identifier}break`)
-      let r = break_component.getAttribute('prev_cycle_end_time')
-      if (r === null) {
-        inp.setAttribute("value", `Start (0)`)
-      } else {
-        r = ((Date.now() - r) / 1000).toFixed(1)
-        inp.setAttribute("value", `Reset (${r})`)
-      }
+  setInterval(function () {
+    let break_component = document.getElementById(`break_${code_identifier}break`)
+    let r = break_component.getAttribute('prev_cycle_end_time')
+    if (r === null) {
+      inp.setAttribute("value", `Start (0)`)
+    } else {
+      r = ((Date.now() - r) / 1000).toFixed(1)
+      inp.setAttribute("value", `Reset (${r})`)
+    }
   }, 10);
   return idx + 1;
 }
@@ -536,7 +536,7 @@ function addscoreloc(table, idx, name, data) {
   inp.setAttribute("value", "none");
   if (data.hasOwnProperty('clickRestriction')) {
     if ((data.clickRestriction === "one") ||
-        (data.clickRestriction === "onePerBox")) {
+      (data.clickRestriction === "onePerBox")) {
       inp.setAttribute("value", data.clickRestriction);
     }
   }
@@ -648,12 +648,12 @@ function onScoreLocClicked(event) {
     let isTinyBot = false //tiny box
 
     if (38 < centerX && centerX < 78 || 220 < centerX && centerX < 260) {
-      if (50 < centerY && centerY < 100){
+      if (50 < centerY && centerY < 100) {
         x_level = 6
         isTinyBot = true
       }
     }
-    if (!isTinyBot){
+    if (!isTinyBot) {
       if (centerX < 35) {
         x_level = 0
       } else if (centerX < 100) {
@@ -682,7 +682,7 @@ function onScoreLocClicked(event) {
     let xyArr = Array.from(JSON.parse(changingXY.value));
 
     if ((toggleClick.toLowerCase() === 'true') &&
-        (boxArr.includes(box))) {
+      (boxArr.includes(box))) {
       // Remove it
       let idx = boxArr.indexOf(box);
       boxArr.splice(idx, 1);
@@ -846,7 +846,7 @@ function addClickableImage(table, idx, name, data) {
   if (data.hasOwnProperty('allowableResponses')) {
     let responses = data.allowableResponses.split(' ').map(Number)
     console.log(responses)
-      inp.setAttribute("value", responses);
+    inp.setAttribute("value", responses);
   }
   cell.appendChild(inp);
 
@@ -1137,7 +1137,7 @@ function addElement(table, idx, data) {
     console.log("No type specified");
     console.log("Data: ")
     console.log(data);
-    err = {code: "err", defaultValue: "No type specified: " + data};
+    err = { code: "err", defaultValue: "No type specified: " + data };
     idx = addText(table, idx, name, err);
     return
   }
@@ -1442,10 +1442,10 @@ function configure() {
     return -1
   }
 
-  if(mydata.hasOwnProperty('dataFormat')) {
+  if (mydata.hasOwnProperty('dataFormat')) {
     dataFormat = mydata.dataFormat;
   }
-  
+
   if (mydata.hasOwnProperty('title')) {
     document.title = mydata.title;
   }
@@ -1473,7 +1473,7 @@ function configure() {
     // YN - Y or N
     // TF - T or F
     // 10 - 1 or 0
-    if (['YN','TF','10'].includes(mydata.checkboxAs)) {
+    if (['YN', 'TF', '10'].includes(mydata.checkboxAs)) {
       console.log("Setting checkboxAs to " + mydata.checkboxAs);
       checkboxAs = mydata.checkboxAs;
     } else {
@@ -1524,7 +1524,7 @@ function configure() {
   });
 
   if (!enableGoogleSheets) {
-  document.getElementById("submit").style.display = "none";
+    document.getElementById("submit").style.display = "none";
   }
   return 0
 }
@@ -1601,7 +1601,7 @@ function getCurrentMatch() {
 // updates the match start
 function updateMatchStart(event) {
   if ((getCurrentMatch() === "") ||
-      (!teams)) {
+    (!teams)) {
     console.log("No match or team data.");
     return;
   }
@@ -1637,7 +1637,7 @@ function getData(dataFormat) {
 
   let checkedChar;
   let uncheckedChar;
-  switch(checkboxAs) {
+  switch (checkboxAs) {
     case 'TF':
       checkedChar = 'T';
       uncheckedChar = 'F';
@@ -1689,37 +1689,37 @@ function getData(dataFormat) {
   Array.from(fd.keys()).forEach(thisKey => {
     strArray.push(thisKey + "=" + fd.get(thisKey))
   });
-    let gametimes = []
-    let sources = []
-    /* Zone id chart
-    | 0 | 1 | 2 | 3 | 4 | 5 |
-    | 0 |5|1|   2   |3|5| 4 |
-    */
-    let zone_ids = []
-    let targets = []
-    let statuses = []
-    let times = []
-    for (let i = 0; i < cycles.length; i++) {
-        let cycle = cycles[i]
-        gametimes.push(0)
-        sources.push(cycle.source)
-        let p = parseInt(cycle.score_loc.substring(0, 1))
-        if (p !== 6) {  // Not a tiny box thingy
-          if (Form['r'].value.startsWith('r')) {
-            p = 5 - p
-          }
-        }
-        if (p >= 3) {
-            p -= 1
-        }
-        zone_ids.push(p)
-        targets.push(cycle.target)
-        statuses.push(cycle.status)
-        times.push(0)
+  let gametimes = []
+  let sources = []
+  /* Zone id chart
+  | 0 | 1 | 2 | 3 | 4 | 5 |
+  | 0 |5|1|   2   |3|5| 4 |
+  */
+  let zone_ids = []
+  let targets = []
+  let statuses = []
+  let times = []
+  for (let i = 0; i < cycles.length; i++) {
+    let cycle = cycles[i]
+    gametimes.push(0)
+    sources.push(cycle.source)
+    let p = parseInt(cycle.score_loc.substring(0, 1))
+    if (p !== 6) {  // Not a tiny box thingy
+      if (Form['r'].value.startsWith('r')) {
+        p = 5 - p
+      }
     }
-    // normal_data;gametimes;sources;zone_ids;targets;statuses;times
-    //            |-> cycle data, in array format, delimiter = comma
-    return `${strArray.join(";")};gat=[${gametimes.join(',')}];src=[${sources.join(',')}];zis=[${zone_ids.join(',')}];tar=[${targets.join(',')}];sts=[${statuses.join(',')}];tim=[${times.join(',')}]`
+    if (p >= 3) {
+      p -= 1
+    }
+    zone_ids.push(p)
+    targets.push(cycle.target)
+    statuses.push(cycle.status)
+    times.push(0)
+  }
+  // normal_data;gametimes;sources;zone_ids;targets;statuses;times
+  //            |-> cycle data, in array format, delimiter = comma
+  return `${strArray.join(";")};gat=[${gametimes.join(',')}];src=[${sources.join(',')}];zis=[${zone_ids.join(',')}];tar=[${targets.join(',')}];sts=[${statuses.join(',')}];tim=[${times.join(',')}]`
 }
 
 // Returns a boolean: whether data in form is valid or not
@@ -1733,7 +1733,7 @@ function validateData() {
         rftitle = "Auto Start Position"
       } else {
         thisInputEl = thisRF instanceof RadioNodeList ? thisRF[0] : thisRF;
-        rftitle = thisInputEl.parentElement.parentElement.children[0].innerHTML.replace("&nbsp;","");
+        rftitle = thisInputEl.parentElement.parentElement.children[0].innerHTML.replace("&nbsp;", "");
       }
       errStr += rf + ": " + rftitle + "\n";
       ret = false;
@@ -1787,8 +1787,8 @@ function clearForm() {
       if (code === "s") continue
 
       if (code === "r") {
-	      e.value = undefined;
-	      continue;
+        e.value = undefined;
+        continue;
       }
 
       if (e.className === "clickableImage") {
@@ -1818,8 +1818,8 @@ function clearForm() {
       } else {
         if (e.type === "number" || e.type === "text" || e.type === "hidden") {
           if ((e.className === "counter") ||
-              (e.className === "timer") ||
-              (e.className === "cycle")) {
+            (e.className === "timer") ||
+            (e.className === "cycle")) {
             e.value = 0
             if (e.className === "timer" || e.className === "cycle") {
               // Stop interval
@@ -1906,7 +1906,7 @@ function drawFields(name) {
         if (drawType === 'circle') {  // Should only be for auton start pos {Circle: ctx.arc(centerX, centerY, shapeArr[1], 0, 2 * Math.PI, false);}
           let x_level = centerX < 150 && centerX >= 130 ? 130 : (centerX > 150 && centerX <= 170 ? 150 : -1);
           let y_level;
-          if (x_level === -1) {continue;}
+          if (x_level === -1) { continue; }
           if (centerY < 50) {
             y_level = 0
           } else if (centerY < 100) {
@@ -1914,53 +1914,53 @@ function drawFields(name) {
           } else {
             y_level = 100
           }
-	  ctx.rect(x_level, y_level, 20, 50);
+          ctx.rect(x_level, y_level, 20, 50);
         } else if (drawType === 'rect') {
           try {
             let x_level = 0;
             let y_level = 0;
             let sideLength = 20;
 
-	    //sorry alx ;-;
-	    if (withinBounds(centerX, centerY, 91, 65, sideLength)) {
-		ctx.rect(91, 65, sideLength, sideLength);
+            //sorry alx ;-;
+            if (withinBounds(centerX, centerY, 91, 65, sideLength)) {
+              ctx.rect(91, 65, sideLength, sideLength);
 
-	    } else if (withinBounds(centerX, centerY, 42, 65, sideLength)) {
-		ctx.rect(42, 65, sideLength, sideLength);
+            } else if (withinBounds(centerX, centerY, 42, 65, sideLength)) {
+              ctx.rect(42, 65, sideLength, sideLength);
 
-	    } else if (withinBounds(centerX, centerY, 238, 65, sideLength)) {
-		ctx.rect(238, 65, sideLength, sideLength);
+            } else if (withinBounds(centerX, centerY, 238, 65, sideLength)) {
+              ctx.rect(238, 65, sideLength, sideLength);
 
-	    } else if (withinBounds(centerX, centerY, 189, 65, sideLength)) {
-		ctx.rect(189, 65, sideLength, sideLength);
+            } else if (withinBounds(centerX, centerY, 189, 65, sideLength)) {
+              ctx.rect(189, 65, sideLength, sideLength);
 
-	    } else if (withinBounds(centerX, centerY, 100, 65, sideLength)) {
-		ctx.rect(100, 65, sideLength, sideLength);
+            } else if (withinBounds(centerX, centerY, 100, 65, sideLength)) {
+              ctx.rect(100, 65, sideLength, sideLength);
 
-	    } else if (withinBounds(centerX, centerY, 100, 65, sideLength)) {
-		ctx.rect(100, 65, sideLength, sideLength);
+            } else if (withinBounds(centerX, centerY, 100, 65, sideLength)) {
+              ctx.rect(100, 65, sideLength, sideLength);
 
-	    } else if (withinBounds(centerX, centerY, 100, 65, sideLength)) {
-		ctx.rect(100, 65, sideLength, sideLength);
+            } else if (withinBounds(centerX, centerY, 100, 65, sideLength)) {
+              ctx.rect(100, 65, sideLength, sideLength);
 
-	    } else if (withinBounds(centerX, centerY, 100, 65, sideLength)) {
-		ctx.rect(100, 65, sideLength, sideLength);
+            } else if (withinBounds(centerX, centerY, 100, 65, sideLength)) {
+              ctx.rect(100, 65, sideLength, sideLength);
 
-	    } else if (withinBounds(centerX, centerY, 100, 65, sideLength)) {
-		ctx.rect(100, 65, sideLength, sideLength);
+            } else if (withinBounds(centerX, centerY, 100, 65, sideLength)) {
+              ctx.rect(100, 65, sideLength, sideLength);
 
-	    } else if (withinBounds(centerX, centerY, 100, 65, sideLength)) {
-		ctx.rect(100, 65, sideLength, sideLength);
+            } else if (withinBounds(centerX, centerY, 100, 65, sideLength)) {
+              ctx.rect(100, 65, sideLength, sideLength);
 
-	    } else if (withinBounds(centerX, centerY, 100, 65, sideLength)) {
-		ctx.rect(100, 65, sideLength, sideLength);
+            } else if (withinBounds(centerX, centerY, 100, 65, sideLength)) {
+              ctx.rect(100, 65, sideLength, sideLength);
 
-	    } else if (withinBounds(centerX, centerY, 100, 65, sideLength)) {
-		ctx.rect(100, 65, sideLength, sideLength);
+            } else if (withinBounds(centerX, centerY, 100, 65, sideLength)) {
+              ctx.rect(100, 65, sideLength, sideLength);
 
-	    }
+            }
 
-            
+
           } catch (e) {
             alert(e)
           }
@@ -2015,9 +2015,9 @@ function onFieldClick(event) {
 
   let allowableResponses = document.getElementById("allowableResponses" + base).value;
 
-  if(allowableResponses !== "none"){
+  if (allowableResponses !== "none") {
     let allowableResponsesList = allowableResponses.split(',').map(Number);
-    if (allowableResponsesList.indexOf(box) === -1){
+    if (allowableResponsesList.indexOf(box) === -1) {
       return;
     }
   }
@@ -2106,7 +2106,7 @@ function findMiddleOfBox(boxNum, width, height, resX, resY) {
   let boxY = Math.floor((boxNum - boxX + 1) / resX);
   let x = Math.round((boxWidth * boxX) + (Math.floor(boxWidth / 2)));
   let y = Math.round((boxHeight * boxY) + (Math.floor(boxHeight / 2)));
-  return x+","+y
+  return x + "," + y
 }
 
 // Undo some field action?
@@ -2150,23 +2150,23 @@ function qr_regenerate() {
   qr.makeCode(data)
   let str = 'Event: !EVENT! Match: !MATCH! Robot: !ROBOT! Team: !TEAM!';
   str = str
-      .replace('!EVENT!', document.getElementById("input_e").value)
-      .replace('!MATCH!', document.getElementById("input_m").value)
-      .replace('!ROBOT!', document.getElementById("display_r").value)
-      .replace('!TEAM!', document.getElementById("input_t").value);
+    .replace('!EVENT!', document.getElementById("input_e").value)
+    .replace('!MATCH!', document.getElementById("input_m").value)
+    .replace('!ROBOT!', document.getElementById("display_r").value)
+    .replace('!TEAM!', document.getElementById("input_t").value);
   document.getElementById("display_qr-info").textContent = str;
   return true
 }
 
 // Displays QR data
-function displayData(){
+function displayData() {
   document.getElementById('data').innerHTML = getData(dataFormat);
 }
 
 // Copies data to clipboard
-function copyData(){
+function copyData() {
   navigator.clipboard.writeText(getData(dataFormat));
-  document.getElementById('copyButton').setAttribute('value','Copied');
+  document.getElementById('copyButton').setAttribute('value', 'Copied');
 }
 
 
