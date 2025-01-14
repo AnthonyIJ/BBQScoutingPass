@@ -1954,49 +1954,52 @@ function drawFields(name) {
                     ctx.rect(x_level, y_level, 30, 50);
                 } else if (drawType === 'rect') {
                     try {
-                        let x_level = 0;
-                        let y_level = 0;
 
-                        //sorry alx ;-;
-                        if (withinBounds(centerX, centerY, 91, 65, 20)) {
-                            ctx.rect(91, 65, 20, 20);
-
-                        } else if (withinBounds(centerX, centerY, 42, 65, 20)) {
-                            ctx.rect(42, 65, 20, 20);
-
-                        } else if (withinBounds(centerX, centerY, 238, 65, 20)) {
-                            ctx.rect(238, 65, 20, 20);
-
-                        } else if (withinBounds(centerX, centerY, 189, 65, 20)) {
-                            ctx.rect(189, 65, 20, 20);
-
-                        } else if (withinBounds(centerX, centerY, 78, 45, 20)) {
-                            ctx.rect(78, 45, 20, 20);
-
-                        } else if (withinBounds(centerX, centerY, 58, 45, 20)) {
-                            ctx.rect(58, 45, 20, 20);
-
-                        } else if (withinBounds(centerX, centerY, 223, 45, 20)) {
-                            ctx.rect(223, 45, 20, 20);
-
-                        } else if (withinBounds(centerX, centerY, 202, 45, 20)) {
-                            ctx.rect(202, 45, 20, 20);
-
-                        } else if (withinBounds(centerX, centerY, 78, 85, 20)) {
-                            ctx.rect(78, 85, 20, 20);
-
-                        } else if (withinBounds(centerX, centerY, 58, 85, 20)) {
-                            ctx.rect(58, 85, 20, 20);
-
-                        } else if (withinBounds(centerX, centerY, 223, 85, 20)) {
-                            ctx.rect(223, 85, 20, 20);
-
-                        } else if (withinBounds(centerX, centerY, 202, 85, 20)) {
-                            ctx.rect(202, 85, 20, 20);
-
+                        for (let i = 0; i < 12; i++) {
+                            if (withinTrapezoid(centerX, centerY, i)) {
+                                trapezoid(ctx, i);
+                                return;
+                            }
                         }
 
+                        //sorry alx ;-;
+                        // if (withinBounds(centerX, centerY, 91, 65, 20)) {
+                        //     ctx.rect(91, 65, 20, 20);
 
+                        // } else if (withinBounds(centerX, centerY, 42, 65, 20)) {
+                        //     ctx.rect(42, 65, 20, 20);
+
+                        // } else if (withinBounds(centerX, centerY, 238, 65, 20)) {
+                        //     ctx.rect(238, 65, 20, 20);
+
+                        // } else if (withinBounds(centerX, centerY, 189, 65, 20)) {
+                        //     ctx.rect(189, 65, 20, 20);
+
+                        // } else if (withinBounds(centerX, centerY, 78, 45, 20)) {
+                        //     ctx.rect(78, 45, 20, 20);
+
+                        // } else if (withinBounds(centerX, centerY, 58, 45, 20)) {
+                        //     ctx.rect(58, 45, 20, 20);
+
+                        // } else if (withinBounds(centerX, centerY, 223, 45, 20)) {
+                        //     ctx.rect(223, 45, 20, 20);
+
+                        // } else if (withinBounds(centerX, centerY, 202, 45, 20)) {
+                        //     ctx.rect(202, 45, 20, 20);
+
+                        // } else if (withinBounds(centerX, centerY, 78, 85, 20)) {
+                        //     ctx.rect(78, 85, 20, 20);
+
+                        // } else if (withinBounds(centerX, centerY, 58, 85, 20)) {
+                        //     ctx.rect(58, 85, 20, 20);
+
+                        // } else if (withinBounds(centerX, centerY, 223, 85, 20)) {
+                        //     ctx.rect(223, 85, 20, 20);
+
+                        // } else if (withinBounds(centerX, centerY, 202, 85, 20)) {
+                        //     ctx.rect(202, 85, 20, 20);
+
+                        // }
                     } catch (e) {
                         alert(e)
                     }
@@ -2030,14 +2033,14 @@ function withinBounds(x, y, minX, minY, length) {
 }
 
 //       /--------BLUE-VALUES--------/----------RED-VALUES----------/ 
-let x1 = [62,  77,  92, 111, 111,  77, 208, 223, 238, 257, 257, 223];
-let y1 = [67,  93,  83,  53,  53,  32,  67,  93,  83,  53,  53,  32];
-let x2 = [43,  62,  77,  92,  77,  43, 189, 208, 223, 238, 223, 189];
-let y2 = [53,  83,  93,  67,  32,  52,  53,  83,  93,  67,  32,  52];
-let x3 = [43,  43,  77,  92,  77,  62, 189, 189, 223, 238, 223, 208];
-let y3 = [93,  93, 118,  83,  57,  66,  93,  93, 118,  83,  57,  66];
-let x4 = [62,  77, 111, 111,  92,  77, 208, 223, 257, 257, 238, 223];
-let y4 = [83, 118,  93,  93,  67,  57,  83, 118,  93,  93,  67,  57];
+let y1 = [67,  93,  83,  53,  53,  32,  53,  53,  32,  67,  93,  83];
+let x1 = [62,  77,  92, 111, 111,  77, 257, 257, 223, 208, 223, 238];
+let x2 = [43,  62,  77,  92,  77,  43, 238, 223, 189, 189, 208, 223];
+let y2 = [53,  83,  93,  67,  32,  52,  67,  32,  52,  53,  83,  93];
+let x3 = [43,  43,  77,  92,  77,  62, 238, 223, 208, 189, 189, 223];
+let y3 = [93,  93, 118,  83,  57,  66,  83,  57,  66,  93,  93, 118];
+let x4 = [62,  77, 111, 111,  92,  77, 257, 238, 223, 208, 223, 257];
+let y4 = [83, 118,  93,  93,  67,  57,  93,  67,  57,  83, 118,  93];
 
 function trapezoid(ctx, idx) {
     
@@ -2052,6 +2055,33 @@ function trapezoid(ctx, idx) {
     ctx.stroke();
     ctx.fillStyle = 'rgba(255, 165, 0, 0.2)';
     ctx.fill();
+}
+
+function withinTrapezoid(x, y, idx) {
+    let signedArea = 0.5 * (x1[idx]*y2[idx] + x2[idx]*y3[idx] + x3[idx]*y4[idx] + x4[idx]*y1[idx] - (y1[idx]*x2[idx] + y2[idx]*x3[idx] + y3[idx]*x4[idx] + y4[idx]*x1[idx]));
+    
+    let a = 0.5 * (x*(y1[idx]-y2[idx]) + x1[idx]*(y2[idx]-y) + x2[idx]*(y-y1[idx]));
+    if (signum(a) != signum(signedArea)) return false;
+
+    let b = 0.5 * (x*(y2[idx]-y3[idx]) + x2[idx]*(y3[idx]-y) + x3[idx]*(y-y2[idx]));
+    if (signum(b) != signum(signedArea)) return false;
+
+    let c = 0.5 * (x*(y3[idx]-y4[idx]) + x3[idx]*(y4[idx]-y) + x4[idx]*(y-y3[idx]));
+    if (signum(c) != signum(signedArea)) return false;
+
+    let d = 0.5 * (x*(y4[idx]-y1[idx]) + x4[idx]*(y1[idx]-y) + x1[idx]*(y-y4[idx]));
+    if (signum(d) != signum(signedArea)) return false;
+
+
+
+    return signedArea == a+b+c+d;
+}
+
+function signum(x) {
+    if (x == 0) {
+        return x;
+    }
+    return x / Math.abs(x);
 }
 
 // On field click
