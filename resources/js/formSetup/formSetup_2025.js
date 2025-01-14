@@ -1930,7 +1930,7 @@ function drawFields(name) {
         let ctx = f.getContext("2d");
         ctx.clearRect(0, 0, f.width, f.height);
         ctx.drawImage(img, 0, 0, f.width, f.height);
-
+        ctx.beginPath();
         let xyStr = document.getElementById("XY_" + code).value
         if (JSON.stringify(xyStr).length > 2) {
             let pts = Array.from(JSON.parse(xyStr))
@@ -1939,10 +1939,9 @@ function drawFields(name) {
                 let centerX = coord[0];
                 let centerY = coord[1];
                 let radius = 5;
-                ctx.beginPath();
                 let drawType = shapeArr[0].toLowerCase()
                 if (drawType === 'circle') {  // Should only be for auton start pos {Circle: ctx.arc(centerX, centerY, shapeArr[1], 0, 2 * Math.PI, false);}
-                    let x_level = centerX < 150 && centerX >= 130 ? 130 : (centerX > 150 && centerX <= 170 ? 150 : -1);
+                    let x_level = centerX < 150 && centerX >= 120 ? 120 : (centerX > 150 && centerX <= 170 ? 150 : -1);
                     let y_level;
                     if (x_level === -1) { continue; }
                     if (centerY < 50) {
@@ -1952,7 +1951,7 @@ function drawFields(name) {
                     } else {
                         y_level = 100
                     }
-                    ctx.rect(x_level, y_level, 20, 50);
+                    ctx.rect(x_level, y_level, 30, 50);
                 } else if (drawType === 'rect') {
                     try {
                         let x_level = 0;
@@ -2004,7 +2003,7 @@ function drawFields(name) {
                 } else {
                     ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
                 }
-                ctx.lineWidth = 2;
+                ctx.lineWidth = 1;
                 if (shapeArr[2] !== "") {
                     ctx.strokeStyle = shapeArr[2];
                 } else {
@@ -2028,6 +2027,31 @@ function drawFields(name) {
 
 function withinBounds(x, y, minX, minY, length) {
     return (minX <= x && x <= minX + length) && (minY <= y && y <= minY + length);
+}
+
+//       /--------BLUE-VALUES--------/----------RED-VALUES----------/ 
+let x1 = [62,  77,  92, 111, 111,  77, 208, 223, 238, 257, 257, 223];
+let y1 = [67,  93,  83,  53,  53,  32,  67,  93,  83,  53,  53,  32];
+let x2 = [43,  62,  77,  92,  77,  43, 189, 208, 223, 238, 223, 189];
+let y2 = [53,  83,  93,  67,  32,  52,  53,  83,  93,  67,  32,  52];
+let x3 = [43,  43,  77,  92,  77,  62, 189, 189, 223, 238, 223, 208];
+let y3 = [93,  93, 118,  83,  57,  66,  93,  93, 118,  83,  57,  66];
+let x4 = [62,  77, 111, 111,  92,  77, 208, 223, 257, 257, 238, 223];
+let y4 = [83, 118,  93,  93,  67,  57,  83, 118,  93,  93,  67,  57];
+
+function trapezoid(ctx, idx) {
+    
+    ctx.beginPath();
+    ctx.moveTo(x1[idx], y1[idx]);
+    ctx.lineTo(x2[idx], y2[idx]);
+    ctx.lineTo(x3[idx], y3[idx]);
+    ctx.lineTo(x4[idx], y4[idx]);
+    ctx.closePath();
+
+    ctx.strokeStyle = '#FFFFFF';
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(255, 165, 0, 0.2)';
+    ctx.fill();
 }
 
 // On field click
@@ -2109,6 +2133,7 @@ function onFieldClick(event) {
     }
     let centerX = event.offsetX
     let centerY = event.offsetY
+    //anthony alert(centerX + " " + centerY);
     let x_level;
     let field_component = document.getElementById('canvas' + base)
     if (centerX < 150) {
