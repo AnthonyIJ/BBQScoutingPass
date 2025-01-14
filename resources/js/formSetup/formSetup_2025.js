@@ -1930,6 +1930,13 @@ function drawFields(name) {
         let ctx = f.getContext("2d");
         ctx.clearRect(0, 0, f.width, f.height);
         ctx.drawImage(img, 0, 0, f.width, f.height);
+
+        if (shapeArr[0].toLowerCase() === 'rect') {
+            for (let i = 0; i < 12; i++) {
+                triangle(ctx, i, false);
+            }
+        }
+        
         ctx.beginPath();
         let xyStr = document.getElementById("XY_" + code).value
         if (JSON.stringify(xyStr).length > 2) {
@@ -1955,12 +1962,12 @@ function drawFields(name) {
                 } else if (drawType === 'rect') {
                     try {
 
-                        for (let i = 0; i < 12; i++) {
-                            if (withinTrapezoid(centerX, centerY, i)) {
-                                trapezoid(ctx, i);
-                                return;
-                            }
-                        }
+                        // for (let i = 0; i < 12; i++) {
+                        //     if (withinTrapezoid(centerX, centerY, i)) {
+                        //         trapezoid(ctx, i, true);
+                        //         return;
+                        //     }
+                        // }
 
                         //sorry alx ;-;
                         // if (withinBounds(centerX, centerY, 91, 65, 20)) {
@@ -2028,53 +2035,82 @@ function drawFields(name) {
 }
 
 
-function withinBounds(x, y, minX, minY, length) {
-    return (minX <= x && x <= minX + length) && (minY <= y && y <= minY + length);
-}
+// function withinBounds(x, y, minX, minY, length) {
+//     return (minX <= x && x <= minX + length) && (minY <= y && y <= minY + length);
+// }
 
-//       /--------BLUE-VALUES--------/----------RED-VALUES----------/ 
-let y1 = [67,  93,  83,  53,  53,  32,  53,  53,  32,  67,  93,  83];
-let x1 = [62,  77,  92, 111, 111,  77, 257, 257, 223, 208, 223, 238];
-let x2 = [43,  62,  77,  92,  77,  43, 238, 223, 189, 189, 208, 223];
-let y2 = [53,  83,  93,  67,  32,  52,  67,  32,  52,  53,  83,  93];
-let x3 = [43,  43,  77,  92,  77,  62, 238, 223, 208, 189, 189, 223];
-let y3 = [93,  93, 118,  83,  57,  66,  83,  57,  66,  93,  93, 118];
-let x4 = [62,  77, 111, 111,  92,  77, 257, 238, 223, 208, 223, 257];
-let y4 = [83, 118,  93,  93,  67,  57,  93,  67,  57,  83, 118,  93];
+// //       /--------BLUE-VALUES--------/----------RED-VALUES----------/ 
+// let y1 = [67,  93,  83,  53,  53,  32,  53,  53,  32,  67,  93,  83];
+// let x1 = [62,  77,  92, 111, 111,  77, 257, 257, 223, 208, 223, 238];
+// let x2 = [43,  62,  77,  92,  77,  43, 238, 223, 189, 189, 208, 223];
+// let y2 = [53,  83,  93,  67,  32,  52,  67,  32,  52,  53,  83,  93];
+// let x3 = [43,  43,  77,  92,  77,  62, 238, 223, 208, 189, 189, 223];
+// let y3 = [93,  93, 118,  83,  57,  66,  83,  57,  66,  93,  93, 118];
+// let x4 = [62,  77, 111, 111,  92,  77, 257, 238, 223, 208, 223, 257];
+// let y4 = [83, 118,  93,  93,  67,  57,  93,  67,  57,  83, 118,  93];
 
-function trapezoid(ctx, idx) {
+// function trapezoid(ctx, idx, fill) {
     
+//     ctx.beginPath();
+//     ctx.moveTo(x1[idx], y1[idx]);
+//     ctx.lineTo(x2[idx], y2[idx]);
+//     ctx.lineTo(x3[idx], y3[idx]);
+//     ctx.lineTo(x4[idx], y4[idx]);
+//     ctx.closePath();
+
+//     ctx.strokeStyle = '#FFFFFF';
+//     ctx.stroke();
+//     if (fill) {
+//         ctx.fillStyle = 'rgba(255, 165, 0, 0.2)';
+//         ctx.fill();
+//     }
+// }
+
+// function withinTrapezoid(x, y, idx) {
+//     let signedArea = 0.5 * (x1[idx]*y2[idx] + x2[idx]*y3[idx] + x3[idx]*y4[idx] + x4[idx]*y1[idx] - (y1[idx]*x2[idx] + y2[idx]*x3[idx] + y3[idx]*x4[idx] + y4[idx]*x1[idx]));
+    
+//     let a = 0.5 * (x*(y1[idx]-y2[idx]) + x1[idx]*(y2[idx]-y) + x2[idx]*(y-y1[idx]));
+//     if (signum(a) != signum(signedArea)) return false;
+
+//     let b = 0.5 * (x*(y2[idx]-y3[idx]) + x2[idx]*(y3[idx]-y) + x3[idx]*(y-y2[idx]));
+//     if (signum(b) != signum(signedArea)) return false;
+
+//     let c = 0.5 * (x*(y3[idx]-y4[idx]) + x3[idx]*(y4[idx]-y) + x4[idx]*(y-y3[idx]));
+//     if (signum(c) != signum(signedArea)) return false;
+
+//     let d = 0.5 * (x*(y4[idx]-y1[idx]) + x4[idx]*(y1[idx]-y) + x1[idx]*(y-y4[idx]));
+//     if (signum(d) != signum(signedArea)) return false;
+
+
+
+//     return signedArea == a+b+c+d;
+// }
+
+let reefCenterX = [77, 223];
+let reefCenterY = [75,  75];
+//            / BLUE VALUES                               / RED VALUES                                    /
+let      x  = [39.75, 39.75,     77, 114.25, 114.25,    77, 185.75, 185.75,    223, 260.25, 260.25,    223];
+let      y  = [ 96.5,  53.5,     32,   53.5,   96.5,   118,   96.5,   53.5,     32,   53.5,   96.5,    118];
+let      x0 = [39.75,    77, 114.25, 114.25,     77, 39.75, 185.75,    223, 260.25, 260.25,    223, 185.75];
+let      y0 = [ 53.5,    32,   53.5,   96.5,    118,  96.5,   53.5,     32,   53.5,   96.5,    118,   96.5];
+
+function triangle(ctx, idx, fill) {
     ctx.beginPath();
-    ctx.moveTo(x1[idx], y1[idx]);
-    ctx.lineTo(x2[idx], y2[idx]);
-    ctx.lineTo(x3[idx], y3[idx]);
-    ctx.lineTo(x4[idx], y4[idx]);
+    ctx.moveTo(reefCenterX[idx <= 5 ? 0 : 1], reefCenterY[idx <= 5 ? 0 : 1]);
+    ctx.lineTo( x[idx],  y[idx]);
+    ctx.lineTo(x0[idx], y0[idx]);
     ctx.closePath();
 
     ctx.strokeStyle = '#FFFFFF';
     ctx.stroke();
-    ctx.fillStyle = 'rgba(255, 165, 0, 0.2)';
-    ctx.fill();
+    if (fill) {
+        ctx.fillStyle = 'rgba(255, 165, 0, 0.2)';
+        ctx.fill();
+    }
 }
 
-function withinTrapezoid(x, y, idx) {
-    let signedArea = 0.5 * (x1[idx]*y2[idx] + x2[idx]*y3[idx] + x3[idx]*y4[idx] + x4[idx]*y1[idx] - (y1[idx]*x2[idx] + y2[idx]*x3[idx] + y3[idx]*x4[idx] + y4[idx]*x1[idx]));
-    
-    let a = 0.5 * (x*(y1[idx]-y2[idx]) + x1[idx]*(y2[idx]-y) + x2[idx]*(y-y1[idx]));
-    if (signum(a) != signum(signedArea)) return false;
-
-    let b = 0.5 * (x*(y2[idx]-y3[idx]) + x2[idx]*(y3[idx]-y) + x3[idx]*(y-y2[idx]));
-    if (signum(b) != signum(signedArea)) return false;
-
-    let c = 0.5 * (x*(y3[idx]-y4[idx]) + x3[idx]*(y4[idx]-y) + x4[idx]*(y-y3[idx]));
-    if (signum(c) != signum(signedArea)) return false;
-
-    let d = 0.5 * (x*(y4[idx]-y1[idx]) + x4[idx]*(y1[idx]-y) + x1[idx]*(y-y4[idx]));
-    if (signum(d) != signum(signedArea)) return false;
-
-
-
-    return signedArea == a+b+c+d;
+function withinTriangle(x, y, idx) {
+    //TODO
 }
 
 function signum(x) {
