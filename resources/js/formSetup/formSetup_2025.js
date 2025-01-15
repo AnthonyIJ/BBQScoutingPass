@@ -672,29 +672,16 @@ function onScoreLocClicked(event) {
 
         let centerX = event.offsetX;
         let centerY = event.offsetY;
-        let y_level;
-        let x_level;
-        
-        if (45 <= centerY && centerY < 65) {
-            y_level = 0;
-        } else if (65 <= centerY && centerY < 85) {
-            y_level = 1;
-        } else if (85 <= centerY && centerY < 105) {
-            y_level = 2;
+        let y_level = 0;
+        let x_level = 0;
+
+        for (x_level = 0; x_level < 12; x_level++) {
+            if (withinTriangle(centerX, centerY, x_level)) {
+                break;
+            }
         }
 
-        if ((42 <= centerX && centerX < 62) || (238 <= centerX && centerX < 258)) {
-            x_level = 0;
-        } else if ((58 <= centerX && centerX < 78) || (223 <= centerX && centerX < 243)) {
-            x_level = 1;
-        } else if ((78 <= centerX && centerX < 98) || (202 <= centerX && centerX < 222)) {
-            x_level = 2;
-        } else if ((91 <= centerX && centerX < 111) || (189 <= centerX && centerX < 209)) {
-            x_level = 3;
-        }
-
-        let coord = x_level + '' + y_level;
-        if (!(coord == '01' || coord == '10' || coord == '12' || coord == '20' || coord == '22' || coord == '31')) {
+        if (x_level >= 12) {
             return;
         }
 
@@ -749,7 +736,7 @@ function onScoreLocClicked(event) {
                 document.getElementById("cycle_" + cycleTimer.value).click();
             }
         }
-
+        //anthony alert("x: " + centerX + " y: " + centerY);            
         drawFields()
     } catch (e) {
         alert(e)
@@ -1734,17 +1721,17 @@ function getData(dataFormat) {
         gametimes.push(cycle.gametime)
         sources.push(cycle.source)
         let zone_id;
-        if (cycle.score_loc == '01') {
+        if (cycle.score_loc == '00' || cycle.score_loc == '60') {
             zone_id = 'a';
-        } else if (cycle.score_loc == '12') {
+        } else if (cycle.score_loc == '10' || cycle.score_loc == '70') {
             zone_id = 'b';
-        } else if (cycle.score_loc == '22') {
+        } else if (cycle.score_loc == '20' || cycle.score_loc == '80') {
             zone_id = 'c';
-        } else if (cycle.score_loc == '31') {
+        } else if (cycle.score_loc == '30' || cycle.score_loc == '90') {
             zone_id = 'd';
-        } else if (cycle.score_loc == '20') {
+        } else if (cycle.score_loc == '40' || cycle.score_loc == '100') {
             zone_id = 'e';
-        } else if (cycle.score_loc == '10') {
+        } else if (cycle.score_loc == '50' || cycle.score_loc == '110') {
             zone_id = 'f';
         } else {
             alert("invalid score location");
@@ -1930,13 +1917,13 @@ function drawFields(name) {
         let ctx = f.getContext("2d");
         ctx.clearRect(0, 0, f.width, f.height);
         ctx.drawImage(img, 0, 0, f.width, f.height);
-
+        
         if (shapeArr[0].toLowerCase() === 'rect') {
             for (let i = 0; i < 12; i++) {
                 triangle(ctx, i, false);
             }
         }
-        
+
         ctx.beginPath();
         let xyStr = document.getElementById("XY_" + code).value
         if (JSON.stringify(xyStr).length > 2) {
@@ -1948,7 +1935,7 @@ function drawFields(name) {
                 let radius = 5;
                 let drawType = shapeArr[0].toLowerCase()
                 if (drawType === 'circle') {  // Should only be for auton start pos {Circle: ctx.arc(centerX, centerY, shapeArr[1], 0, 2 * Math.PI, false);}
-                    let x_level = centerX < 150 && centerX >= 120 ? 120 : (centerX > 150 && centerX <= 170 ? 150 : -1);
+                    let x_level = centerX < 150 && centerX >= 110 ? 110 : (centerX > 150 && centerX <= 170 ? 150 : -1);
                     let y_level;
                     if (x_level === -1) { continue; }
                     if (centerY < 50) {
@@ -1958,16 +1945,18 @@ function drawFields(name) {
                     } else {
                         y_level = 100
                     }
-                    ctx.rect(x_level, y_level, 30, 50);
+                    ctx.rect(x_level, y_level, 40, 50);
                 } else if (drawType === 'rect') {
                     try {
 
-                        // for (let i = 0; i < 12; i++) {
-                        //     if (withinTrapezoid(centerX, centerY, i)) {
-                        //         trapezoid(ctx, i, true);
-                        //         return;
-                        //     }
-                        // }
+                        for (let i = 0; i < 12; i++) {
+                            if (withinTriangle(centerX, centerY, i)) {
+                                triangle(ctx, i, true);
+                                return;
+                            }
+                        }
+
+
 
                         //sorry alx ;-;
                         // if (withinBounds(centerX, centerY, 91, 65, 20)) {
@@ -2050,7 +2039,7 @@ function drawFields(name) {
 // let y4 = [83, 118,  93,  93,  67,  57,  93,  67,  57,  83, 118,  93];
 
 // function trapezoid(ctx, idx, fill) {
-    
+
 //     ctx.beginPath();
 //     ctx.moveTo(x1[idx], y1[idx]);
 //     ctx.lineTo(x2[idx], y2[idx]);
@@ -2068,7 +2057,7 @@ function drawFields(name) {
 
 // function withinTrapezoid(x, y, idx) {
 //     let signedArea = 0.5 * (x1[idx]*y2[idx] + x2[idx]*y3[idx] + x3[idx]*y4[idx] + x4[idx]*y1[idx] - (y1[idx]*x2[idx] + y2[idx]*x3[idx] + y3[idx]*x4[idx] + y4[idx]*x1[idx]));
-    
+
 //     let a = 0.5 * (x*(y1[idx]-y2[idx]) + x1[idx]*(y2[idx]-y) + x2[idx]*(y-y1[idx]));
 //     if (signum(a) != signum(signedArea)) return false;
 
@@ -2087,30 +2076,42 @@ function drawFields(name) {
 // }
 
 let reefCenterX = [77, 223];
-let reefCenterY = [75,  75];
-//            / BLUE VALUES                               / RED VALUES                                    /
-let      x  = [39.75, 39.75,     77, 114.25, 114.25,    77, 185.75, 185.75,    223, 260.25, 260.25,    223];
-let      y  = [ 96.5,  53.5,     32,   53.5,   96.5,   118,   96.5,   53.5,     32,   53.5,   96.5,    118];
-let      x0 = [39.75,    77, 114.25, 114.25,     77, 39.75, 185.75,    223, 260.25, 260.25,    223, 185.75];
-let      y0 = [ 53.5,    32,   53.5,   96.5,    118,  96.5,   53.5,     32,   53.5,   96.5,    118,   96.5];
+let reefCenterY = [75, 75];
+//       / BLUE VALUES                               / RED VALUES                                    /
+let x1 = [39.75,    77, 114.25, 114.25,     77, 39.75, 260.25,    223, 185.75, 185.75,    223, 260.25];
+let y1 = [ 96.5,   118,   96.5,   53.5,     32,  53.5,   53.5,     32,   53.5,   96.5,    118,   96.5];
+let x2 = [39.75, 39.75,     77, 114.25, 114.25,    77, 260.25, 260.25,    223, 185.75, 185.75,    223];
+let y2 = [ 53.5,  96.5,    118,   96.5,   53.5,    32,   96.5,   53.5,     32,   53.5,   96.5,    118];
 
 function triangle(ctx, idx, fill) {
     ctx.beginPath();
     ctx.moveTo(reefCenterX[idx <= 5 ? 0 : 1], reefCenterY[idx <= 5 ? 0 : 1]);
-    ctx.lineTo( x[idx],  y[idx]);
-    ctx.lineTo(x0[idx], y0[idx]);
+    ctx.lineTo(x1[idx], y1[idx]);
+    ctx.lineTo(x2[idx], y2[idx]);
     ctx.closePath();
 
-    ctx.strokeStyle = '#FFFFFF';
+    ctx.strokeStyle = '#000000';
     ctx.stroke();
     if (fill) {
         ctx.fillStyle = 'rgba(255, 165, 0, 0.2)';
         ctx.fill();
+        //alert("woohoo");
     }
 }
 
 function withinTriangle(x, y, idx) {
-    //TODO
+    let signedArea = 0.5 * (reefCenterX[idx <= 5 ? 0 : 1] * (y1[idx] - y2[idx]) + x1[idx] * (y2[idx] - reefCenterY[idx <= 5 ? 0 : 1]) + x2[idx] * (reefCenterY[idx <= 5 ? 0 : 1] - y1[idx]));
+
+    let a = 0.5 * (x * (y1[idx] - y2[idx]) + x1[idx] * (y2[idx] - y) + x2[idx] * (y - y1[idx]));
+    if (signum(a) != signum(signedArea)) return false;
+
+    let b = 0.5 * (x * (y2[idx] - reefCenterY[idx <= 5 ? 0 : 1]) + x2[idx] * (reefCenterY[idx <= 5 ? 0 : 1] - y) + reefCenterX[idx <= 5 ? 0 : 1] * (y - y2[idx]));
+    if (signum(b) != signum(signedArea)) return false;
+
+    let c = 0.5 * (x * (reefCenterY[idx <= 5 ? 0 : 1] - y1[idx]) + reefCenterX[idx <= 5 ? 0 : 1] * (y1[idx] - y) + x1[idx] * (y - reefCenterY[idx <= 5 ? 0 : 1]));
+    if (signum(c) != signum(signedArea)) return false;
+
+    return signedArea == a+b+c;
 }
 
 function signum(x) {
