@@ -119,8 +119,15 @@ function saveCycle(code_identifier, successful) {
         src_value = "x"
     }
 
-    let scoreloc = document.getElementById('canvas_' + code_identifier + 'scoreloc')
-    let scoreloc_value = scoreloc.getAttribute('grid_coords')
+    let scoreloc;
+    let scoreloc_value;
+    if (code_identifier.endsWith('a')) {
+        scoreloc = document.getElementById('canvas_' + code_identifier + 'scoreloc')
+        scoreloc_value = scoreloc.getAttribute('grid_coords')
+    } else {
+        scoreloc = "x";
+        scoreloc_value = "x";
+    }
 
     let tar = Form[`${code_identifier}tar`]
     let tar_value = Cycle.target_condense_map.get(tar.value ? tar.value.replace(/"/g, '').replace(/;/g, "-") : "");
@@ -421,7 +428,9 @@ function addBicycle(table, idx, name, data) { // TODO: update for 2025 season
       "clickRestriction": "one",
       "shape": "rect 4 white orangered true"
   }`)
-    idx = addScoreLoc(table, idx, score_loc_data.name, score_loc_data)
+    if (code_identifier === bicycle_component_identifier + 'a') {
+        idx = addScoreLoc(table, idx, score_loc_data.name, score_loc_data)
+    }
 
     // add target data component
     let target_data = JSON.parse(`
@@ -1734,7 +1743,6 @@ function getData(dataFormat) {
         } else if (cycle.score_loc == '50' || cycle.score_loc == '110') {
             zone_id = 'f';
         } else {
-            alert("invalid score location");
             zone_id = 'x';
         }
         zone_ids.push(zone_id)
@@ -1917,7 +1925,7 @@ function drawFields(name) {
         let ctx = f.getContext("2d");
         ctx.clearRect(0, 0, f.width, f.height);
         ctx.drawImage(img, 0, 0, f.width, f.height);
-        
+
         if (shapeArr[0].toLowerCase() === 'rect') {
             for (let i = 0; i < 12; i++) {
                 triangle(ctx, i, false);
@@ -1935,7 +1943,7 @@ function drawFields(name) {
                 let radius = 5;
                 let drawType = shapeArr[0].toLowerCase()
                 if (drawType === 'circle') {  // Should only be for auton start pos {Circle: ctx.arc(centerX, centerY, shapeArr[1], 0, 2 * Math.PI, false);}
-                    let x_level = centerX < 150 && centerX >= 110 ? 110 : (centerX > 150 && centerX <= 170 ? 150 : -1);
+                    let x_level = (centerX < 150 && centerX >= 110) ? 110 : ((centerX > 150 && centerX <= 190) ? 150 : -1);
                     let y_level;
                     if (x_level === -1) { continue; }
                     if (centerY < 50) {
@@ -2078,10 +2086,10 @@ function drawFields(name) {
 let reefCenterX = [77, 223];
 let reefCenterY = [75, 75];
 //       / BLUE VALUES                               / RED VALUES                                    /
-let x1 = [39.75,    77, 114.25, 114.25,     77, 39.75, 260.25,    223, 185.75, 185.75,    223, 260.25];
-let y1 = [ 96.5,   118,   96.5,   53.5,     32,  53.5,   53.5,     32,   53.5,   96.5,    118,   96.5];
-let x2 = [39.75, 39.75,     77, 114.25, 114.25,    77, 260.25, 260.25,    223, 185.75, 185.75,    223];
-let y2 = [ 53.5,  96.5,    118,   96.5,   53.5,    32,   96.5,   53.5,     32,   53.5,   96.5,    118];
+let x1 = [39.75, 77, 114.25, 114.25, 77, 39.75, 260.25, 223, 185.75, 185.75, 223, 260.25];
+let y1 = [96.5, 118, 96.5, 53.5, 32, 53.5, 53.5, 32, 53.5, 96.5, 118, 96.5];
+let x2 = [39.75, 39.75, 77, 114.25, 114.25, 77, 260.25, 260.25, 223, 185.75, 185.75, 223];
+let y2 = [53.5, 96.5, 118, 96.5, 53.5, 32, 96.5, 53.5, 32, 53.5, 96.5, 118];
 
 function triangle(ctx, idx, fill) {
     ctx.beginPath();
@@ -2111,7 +2119,7 @@ function withinTriangle(x, y, idx) {
     let c = 0.5 * (x * (reefCenterY[idx <= 5 ? 0 : 1] - y1[idx]) + reefCenterX[idx <= 5 ? 0 : 1] * (y1[idx] - y) + x1[idx] * (y - reefCenterY[idx <= 5 ? 0 : 1]));
     if (signum(c) != signum(signedArea)) return false;
 
-    return signedArea == a+b+c;
+    return signedArea == a + b + c;
 }
 
 function signum(x) {
@@ -2203,16 +2211,14 @@ function onFieldClick(event) {
     //anthony alert(centerX + " " + centerY);
     let x_level;
     let field_component = document.getElementById('canvas' + base)
-    if (centerX < 150) {
+    if (110 <= centerX && centerX < 150) {
         x_level = 0
-    } else {
-        if (centerX > 150) {
-            x_level = 1
-        } else {
-            field_component.removeAttribute('grid_coords')
-            drawFields();
-            return;
-        }
+    } else if (150 < centerX && centerX <= 190){
+        x_level = 1;
+    }  else {
+//        field_component.removeAttribute('grid_coords')
+//        drawFields();
+        return;
     }
     let y_level;
     if (centerY < 50) {
@@ -2241,6 +2247,7 @@ function findMiddleOfBox(boxNum, width, height, resX, resY) {
 // Undo some field action?
 function undo(event) {
     let undoID = event.firstChild;
+    
     //Getting rid of last value
     let changingXY = document.getElementById("XY" + getIdBase(undoID.id));
     let changingInput = document.getElementById("input" + getIdBase(undoID.id));
