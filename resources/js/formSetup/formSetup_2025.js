@@ -491,12 +491,12 @@ function addScoreLoc(table, idx, name, data) {
         }
     }
 
-    let showUndo = true;
-    if (data.hasOwnProperty('showUndo')) {
-        if (data.showUndo.toLowerCase() === 'false') {
-            showUndo = false;
-        }
-    }
+    let showUndo = false;
+    // if (data.hasOwnProperty('showUndo')) {
+    //     if (data.showUndo.toLowerCase() === 'false') {
+    //         showUndo = false;
+    //     }
+    // }
 
     if (showFlip || showUndo) {
         idx += 1
@@ -505,16 +505,16 @@ function addScoreLoc(table, idx, name, data) {
         cell.setAttribute("colspan", 2);
         cell.setAttribute("style", "text-align: center;");
 
-        if (showUndo) {
-            // Undo button
-            let undoButton = document.createElement("input");
-            undoButton.setAttribute("type", "button");
-            undoButton.setAttribute("onclick", "undo(this.parentElement)");
-            undoButton.setAttribute("value", "Undo");
-            undoButton.setAttribute("id", "undo_" + data.code);
-            undoButton.setAttribute("class", "undoButton");
-            cell.appendChild(undoButton);
-        }
+        // if (showUndo) {
+        //     // Undo button
+        //     let undoButton = document.createElement("input");
+        //     undoButton.setAttribute("type", "button");
+        //     undoButton.setAttribute("onclick", "undo(this.parentElement)");
+        //     undoButton.setAttribute("value", "Undo");
+        //     undoButton.setAttribute("id", "undo_" + data.code);
+        //     undoButton.setAttribute("class", "undoButton");
+        //     cell.appendChild(undoButton);
+        // }
 
         if (showFlip) {
             // Flip button
@@ -689,9 +689,19 @@ function onScoreLocClicked(event) {
                 break;
             }
         }
-
-        if (x_level >= 12) {
-            return;
+        
+        if (x_level == 12) {
+            if (withinBounds(centerX, centerY, 135, 0, 30, 75)) {
+                x_level = 12;
+            } else if (withinBounds(centerX, centerY, 135, 75, 30, 75)) {
+                x_level = 13;
+            } else if (withinBounds(centerX, centerY, 95, 120, 40, 30)) {
+                x_level = 14;
+            } else if (withinBounds(centerX, centerY, 165, 0, 40, 30)) {
+                x_level = 15;
+            } else {
+                return;
+            }
         }
 
         let scoreloc_component = document.getElementById('canvas' + base)
@@ -775,12 +785,12 @@ function addClickableImage(table, idx, name, data) {
         }
     }
 
-    let showUndo = true;
-    if (data.hasOwnProperty('showUndo')) {
-        if (data.showUndo.toLowerCase() === 'false') {
-            showUndo = false;
-        }
-    }
+    let showUndo = false;
+    // if (data.hasOwnProperty('showUndo')) {
+    //     if (data.showUndo.toLowerCase() === 'false') {
+    //         showUndo = false;
+    //     }
+    // }
 
     if (showFlip || showUndo) {
         idx += 1
@@ -789,16 +799,16 @@ function addClickableImage(table, idx, name, data) {
         cell.setAttribute("colspan", 2);
         cell.setAttribute("style", "text-align: center;");
 
-        if (showUndo) {
-            // Undo button
-            let undoButton = document.createElement("input");
-            undoButton.setAttribute("type", "button");
-            undoButton.setAttribute("onclick", "undo(this.parentElement)");
-            undoButton.setAttribute("value", "Undo");
-            undoButton.setAttribute("id", "undo_" + data.code);
-            undoButton.setAttribute("class", "undoButton");
-            cell.appendChild(undoButton);
-        }
+        // if (showUndo) {
+        //     // Undo button
+        //     let undoButton = document.createElement("input");
+        //     undoButton.setAttribute("type", "button");
+        //     undoButton.setAttribute("onclick", "undo(this.parentElement)");
+        //     undoButton.setAttribute("value", "Undo");
+        //     undoButton.setAttribute("id", "undo_" + data.code);
+        //     undoButton.setAttribute("class", "undoButton");
+        //     cell.appendChild(undoButton);
+        // }
 
         if (showFlip) {
             // Flip button
@@ -1742,7 +1752,12 @@ function getData(dataFormat) {
             zone_id = 'e';
         } else if (cycle.score_loc == '50' || cycle.score_loc == '110') {
             zone_id = 'f';
+        } else if (cycle.score_loc == '120' || cycle.score_loc == '130') {
+            zone_id = 'g';
+        } else if (cycle.score_loc == '140' || cycle.score_loc == '150') {
+            zone_id = 'h';
         } else {
+            alert("bzyee");
             zone_id = 'x';
         }
         zone_ids.push(zone_id)
@@ -1930,6 +1945,12 @@ function drawFields(name) {
             for (let i = 0; i < 12; i++) {
                 triangle(ctx, i, false);
             }
+
+            drawRect(ctx, 135, 0, 30, 75, false);
+            drawRect(ctx, 135, 75, 30, 75, false);
+
+            drawRect(ctx, 95, 120, 40, 30, false);
+            drawRect(ctx, 165, 0, 40, 30, false);
         }
 
         ctx.beginPath();
@@ -1956,54 +1977,26 @@ function drawFields(name) {
                     ctx.rect(x_level, y_level, 40, 50);
                 } else if (drawType === 'rect') {
                     try {
-
                         for (let i = 0; i < 12; i++) {
                             if (withinTriangle(centerX, centerY, i)) {
                                 triangle(ctx, i, true);
                                 return;
                             }
                         }
+                        if (withinBounds(centerX, centerY, 135, 0, 30, 75)) {
+                            drawRect(ctx, 135, 0, 30, 75, true);
+                            return;
+                        } else if (withinBounds(centerX, centerY, 135, 75, 30, 75)) {
+                            drawRect(ctx, 135, 75, 30, 75, true);
+                            return;
+                        } else if (withinBounds(centerX, centerY, 95, 120, 40, 30)) {
+                            drawRect(ctx, 95, 120, 40, 30, true);
+                            return;
+                        } else if (withinBounds(centerX, centerY, 165, 0, 40, 30)) {
+                            drawRect(ctx, 165, 0, 40, 30, true);
+                            return;
+                        }
 
-
-
-                        //sorry alx ;-;
-                        // if (withinBounds(centerX, centerY, 91, 65, 20)) {
-                        //     ctx.rect(91, 65, 20, 20);
-
-                        // } else if (withinBounds(centerX, centerY, 42, 65, 20)) {
-                        //     ctx.rect(42, 65, 20, 20);
-
-                        // } else if (withinBounds(centerX, centerY, 238, 65, 20)) {
-                        //     ctx.rect(238, 65, 20, 20);
-
-                        // } else if (withinBounds(centerX, centerY, 189, 65, 20)) {
-                        //     ctx.rect(189, 65, 20, 20);
-
-                        // } else if (withinBounds(centerX, centerY, 78, 45, 20)) {
-                        //     ctx.rect(78, 45, 20, 20);
-
-                        // } else if (withinBounds(centerX, centerY, 58, 45, 20)) {
-                        //     ctx.rect(58, 45, 20, 20);
-
-                        // } else if (withinBounds(centerX, centerY, 223, 45, 20)) {
-                        //     ctx.rect(223, 45, 20, 20);
-
-                        // } else if (withinBounds(centerX, centerY, 202, 45, 20)) {
-                        //     ctx.rect(202, 45, 20, 20);
-
-                        // } else if (withinBounds(centerX, centerY, 78, 85, 20)) {
-                        //     ctx.rect(78, 85, 20, 20);
-
-                        // } else if (withinBounds(centerX, centerY, 58, 85, 20)) {
-                        //     ctx.rect(58, 85, 20, 20);
-
-                        // } else if (withinBounds(centerX, centerY, 223, 85, 20)) {
-                        //     ctx.rect(223, 85, 20, 20);
-
-                        // } else if (withinBounds(centerX, centerY, 202, 85, 20)) {
-                        //     ctx.rect(202, 85, 20, 20);
-
-                        // }
                     } catch (e) {
                         alert(e)
                     }
@@ -2032,9 +2025,9 @@ function drawFields(name) {
 }
 
 
-// function withinBounds(x, y, minX, minY, length) {
-//     return (minX <= x && x <= minX + length) && (minY <= y && y <= minY + length);
-// }
+function withinBounds(x, y, minX, minY, width, height) {
+    return (minX <= x && x <= minX + width) && (minY <= y && y <= minY + height);
+}
 
 // //       /--------BLUE-VALUES--------/----------RED-VALUES----------/ 
 // let y1 = [67,  93,  83,  53,  53,  32,  53,  53,  32,  67,  93,  83];
@@ -2098,7 +2091,7 @@ function triangle(ctx, idx, fill) {
     ctx.lineTo(x2[idx], y2[idx]);
     ctx.closePath();
 
-    ctx.strokeStyle = '#000000';
+    ctx.strokeStyle = '#FFFFFF';
     ctx.stroke();
     if (fill) {
         ctx.fillStyle = 'rgba(255, 165, 0, 0.2)';
@@ -2127,6 +2120,20 @@ function signum(x) {
         return x;
     }
     return x / Math.abs(x);
+}
+
+function drawRect(ctx, x, y, width, height, fill) {
+    ctx.beginPath();
+    ctx.rect(x, y, width, height);
+    ctx.closePath();
+
+    ctx.strokeStyle = '#FFFFFF';
+    ctx.stroke();
+    if (fill) {
+        ctx.fillStyle = 'rgba(255, 165, 0, 0.2)';
+        ctx.fill();
+        //alert("woohoo");
+    }
 }
 
 // On field click
