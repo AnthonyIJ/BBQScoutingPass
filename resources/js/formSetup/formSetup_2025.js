@@ -8,27 +8,22 @@ let cycles = []
 // Cycle class
 class Cycle {
     static src_condense_map = new Map([
-        ['hpg', 1],
-        ['hpo', 2],
-        ['oga', 3],
-        ['g', 4],
-        ["p1", "a"],
-        ["p2", "b"],
-        ["p3", "c"],
-        ["c1", "d"],
-        ["c2", "e"],
-        ["c3", "f"],
-        ["c4", "g"],
-        ["c5", "h"],
+        ["p1", "1"],
+        ["p2", "2"],
+        ["p3", "3"],
+        ["cs", "cs"],
+        ["os", "os"],
         ["pl", "p"],// preload
-        ['ap', "5"],// alliance partner
         ['x', "x"] //no source
     ])
     static target_condense_map = new Map([
-        ['par', 0],
-        ['amp', 1],
-        ['spe', 2],
-        ['amp_spe', 3]
+        ['L1', 1],
+        ['L2', 2],
+        ['L3', 3],
+        ['L4', 4],
+        ['pro', "p"],
+        ['net', "n"],
+        ["x", "x"]
     ])
 
     constructor(gametime, source, score_loc, target, status, time) {
@@ -141,7 +136,7 @@ function saveCycle(code_identifier, successful) {
     if (src_value === undefined) {
         undefined_vars.push('\"Source\"')
     }
-    if (scoreloc_value === null || scoreloc_value === 'null') {
+    if ((scoreloc_value === null || scoreloc_value === 'null') && (tar_value !== "p" && tar_value !== "n")) {
         undefined_vars.push('\"Score Location\"')
     }
     if (tar_value === undefined) {
@@ -388,15 +383,12 @@ function addBicycle(table, idx, name, data) { // TODO: update for 2025 season
      "code": "${code_identifier}src",
      "type": "radio",
      "choices": {
-      "c1": "C1",
-      "p1": "P1",
-      "pl": "Preload<br>",
-      "c2": "C2",
-      "p2": "P2<br>",
-      "c3": "C3",
-      "p3": "P3<br>",
-      "c4": "C4<br>",
-      "c5": "C5"
+        "p1": "1    ",
+        "pl": "Preload<br>",
+        "p2": "2    ",
+        "os": "Opponent piece<br>",
+        "p3": "3    ",
+        "cs": "Coral Station"
      },
      "defaultValue": "pl"
      }`)
@@ -439,11 +431,14 @@ function addBicycle(table, idx, name, data) { // TODO: update for 2025 season
    "code": "${code_identifier}tar",
    "type": "radio",
    "choices": {
-    "par": "Alliance Parter<br>",
-    "amp": "Amp<br>",
-    "spe": "Speaker<br>"
+    "L4": "L4",
+    "pro": "Processor<br>",
+    "L3": "L3",
+    "net": "Net<br>",
+    "L2": "L2<br>",
+    "L1": "L1<br>"
    },
-   "defaultValue": "spe"
+   "defaultValue": "L1"
   }`)
     idx = addRadio(table, idx, target_data.name, target_data)  // Target
 
@@ -689,19 +684,20 @@ function onScoreLocClicked(event) {
                 break;
             }
         }
-        
+
         if (x_level == 12) {
-            if (withinBounds(centerX, centerY, 135, 0, 30, 75)) {
-                x_level = 12;
-            } else if (withinBounds(centerX, centerY, 135, 75, 30, 75)) {
-                x_level = 13;
-            } else if (withinBounds(centerX, centerY, 95, 120, 40, 30)) {
-                x_level = 14;
-            } else if (withinBounds(centerX, centerY, 165, 0, 40, 30)) {
-                x_level = 15;
-            } else {
-                return;
-            }
+            // if (withinBounds(centerX, centerY, 135, 0, 30, 75)) {
+            //     x_level = 12;
+            // } else if (withinBounds(centerX, centerY, 135, 75, 30, 75)) {
+            //     x_level = 13;
+            // } else if (withinBounds(centerX, centerY, 95, 120, 40, 30)) {
+            //     x_level = 14;
+            // } else if (withinBounds(centerX, centerY, 165, 0, 40, 30)) {
+            //     x_level = 15;
+            // } else {
+            //     return;
+            // }
+            return;
         }
 
         let scoreloc_component = document.getElementById('canvas' + base)
@@ -1739,26 +1735,21 @@ function getData(dataFormat) {
         let cycle = cycles[i]
         gametimes.push(cycle.gametime)
         sources.push(cycle.source)
-        let zone_id;
-        if (cycle.score_loc == '00' || cycle.score_loc == '60') {
-            zone_id = 'a';
-        } else if (cycle.score_loc == '10' || cycle.score_loc == '70') {
-            zone_id = 'b';
-        } else if (cycle.score_loc == '20' || cycle.score_loc == '80') {
-            zone_id = 'c';
-        } else if (cycle.score_loc == '30' || cycle.score_loc == '90') {
-            zone_id = 'd';
-        } else if (cycle.score_loc == '40' || cycle.score_loc == '100') {
-            zone_id = 'e';
-        } else if (cycle.score_loc == '50' || cycle.score_loc == '110') {
-            zone_id = 'f';
-        } else if (cycle.score_loc == '120' || cycle.score_loc == '130') {
-            zone_id = 'g';
-        } else if (cycle.score_loc == '140' || cycle.score_loc == '150') {
-            zone_id = 'h';
-        } else {
-            alert("bzyee");
-            zone_id = 'x';
+        let zone_id = 'x';
+        if (cycle.target !== 'p' && cycle.target !== 'n') {
+            if (cycle.score_loc == '00' || cycle.score_loc == '60') {
+                zone_id = 'a';
+            } else if (cycle.score_loc == '10' || cycle.score_loc == '70') {
+                zone_id = 'b';
+            } else if (cycle.score_loc == '20' || cycle.score_loc == '80') {
+                zone_id = 'c';
+            } else if (cycle.score_loc == '30' || cycle.score_loc == '90') {
+                zone_id = 'd';
+            } else if (cycle.score_loc == '40' || cycle.score_loc == '100') {
+                zone_id = 'e';
+            } else if (cycle.score_loc == '50' || cycle.score_loc == '110') {
+                zone_id = 'f';
+            }
         }
         zone_ids.push(zone_id)
         targets.push(cycle.target)
@@ -1946,11 +1937,11 @@ function drawFields(name) {
                 triangle(ctx, i, false);
             }
 
-            drawRect(ctx, 135, 0, 30, 75, false);
-            drawRect(ctx, 135, 75, 30, 75, false);
+            // drawRect(ctx, 135, 0, 30, 75, false);
+            // drawRect(ctx, 135, 75, 30, 75, false);
 
-            drawRect(ctx, 95, 120, 40, 30, false);
-            drawRect(ctx, 165, 0, 40, 30, false);
+            // drawRect(ctx, 95, 120, 40, 30, false);
+            // drawRect(ctx, 165, 0, 40, 30, false);
         }
 
         ctx.beginPath();
@@ -1983,19 +1974,19 @@ function drawFields(name) {
                                 return;
                             }
                         }
-                        if (withinBounds(centerX, centerY, 135, 0, 30, 75)) {
-                            drawRect(ctx, 135, 0, 30, 75, true);
-                            return;
-                        } else if (withinBounds(centerX, centerY, 135, 75, 30, 75)) {
-                            drawRect(ctx, 135, 75, 30, 75, true);
-                            return;
-                        } else if (withinBounds(centerX, centerY, 95, 120, 40, 30)) {
-                            drawRect(ctx, 95, 120, 40, 30, true);
-                            return;
-                        } else if (withinBounds(centerX, centerY, 165, 0, 40, 30)) {
-                            drawRect(ctx, 165, 0, 40, 30, true);
-                            return;
-                        }
+                        // if (withinBounds(centerX, centerY, 135, 0, 30, 75)) {
+                        //     drawRect(ctx, 135, 0, 30, 75, true);
+                        //     return;
+                        // } else if (withinBounds(centerX, centerY, 135, 75, 30, 75)) {
+                        //     drawRect(ctx, 135, 75, 30, 75, true);
+                        //     return;
+                        // } else if (withinBounds(centerX, centerY, 95, 120, 40, 30)) {
+                        //     drawRect(ctx, 95, 120, 40, 30, true);
+                        //     return;
+                        // } else if (withinBounds(centerX, centerY, 165, 0, 40, 30)) {
+                        //     drawRect(ctx, 165, 0, 40, 30, true);
+                        //     return;
+                        // }
 
                     } catch (e) {
                         alert(e)
@@ -2220,11 +2211,11 @@ function onFieldClick(event) {
     let field_component = document.getElementById('canvas' + base)
     if (110 <= centerX && centerX < 150) {
         x_level = 0
-    } else if (150 < centerX && centerX <= 190){
+    } else if (150 < centerX && centerX <= 190) {
         x_level = 1;
-    }  else {
-//        field_component.removeAttribute('grid_coords')
-//        drawFields();
+    } else {
+        //        field_component.removeAttribute('grid_coords')
+        //        drawFields();
         return;
     }
     let y_level;
@@ -2254,7 +2245,7 @@ function findMiddleOfBox(boxNum, width, height, resX, resY) {
 // Undo some field action?
 function undo(event) {
     let undoID = event.firstChild;
-    
+
     //Getting rid of last value
     let changingXY = document.getElementById("XY" + getIdBase(undoID.id));
     let changingInput = document.getElementById("input" + getIdBase(undoID.id));

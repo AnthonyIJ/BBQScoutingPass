@@ -92,24 +92,6 @@ const config_data = `
             "code": "teleopbicycle",
             "type": "bicycle",
             "bicycle_id": "auton"
-        },
-        {
-            "name": "End with:",
-            "code": "ew",
-            "type": "radio",
-             "choices": {
-              "c1": "C1",
-              "p1": "P1",
-              "pl": "Preload<br>",
-              "c2": "C2",
-              "p2": "P2",
-	      "na": "Nothing<br>",
-              "c3": "C3",
-              "p3": "P3<br>",
-              "c4": "C4<br>",
-              "c5": "C5"
-             },
-             "defaultValue": "pl"
         }
     ],
     "teleop": [
