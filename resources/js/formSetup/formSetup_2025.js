@@ -110,7 +110,13 @@ function saveCycle(code_identifier, successful) {
     if (code_identifier.endsWith('a')) {
         src = Form[`${code_identifier}src`]
         src_value = Cycle.src_condense_map.get(src.value ? src.value.replace(/"/g, '').replace(/;/g, "-") : "");
-
+        if (isFlipped) {
+            if (src_value == 1) {
+                src_value = 3;
+            } else if (src_value == 3) {
+                src_value = 1;
+            }
+        }
         if (getRobot().charAt(0) === 'r') {
             if (src_value == 1) {
                 src_value = 3;
