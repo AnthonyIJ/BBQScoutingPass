@@ -1,9 +1,10 @@
 // The guts of the ScoutingPASS application
 
 // === Bicycle & Cycle data ===
-let requiredFields = [/*"e", "m", "l", "r", "s", "t", "as"*/];  // What are these again...?  (Prob from first init. page)
+let requiredFields = ["e", "m", "l", "r", "s", "t", "as"];  // What are these again...?  (Prob from first init. page)
 let prev_cycle_end_time = null
 let cycles = []
+let isFlipped = false;
 
 // Cycle class
 class Cycle {
@@ -109,6 +110,15 @@ function saveCycle(code_identifier, successful) {
     if (code_identifier.endsWith('a')) {
         src = Form[`${code_identifier}src`]
         src_value = Cycle.src_condense_map.get(src.value ? src.value.replace(/"/g, '').replace(/;/g, "-") : "");
+
+        if (getRobot().charAt(0) === 'r') {
+            if (src_value == 1) {
+                src_value = 3;
+            } else if (src_value == 3) {
+                src_value = 1;
+            }
+        }
+
     } else {
         src = "x"
         src_value = "x"
@@ -479,12 +489,12 @@ function addScoreLoc(table, idx, name, data) {
         cell.setAttribute("title", data.tooltip);
     }
 
-    let showFlip = true;
-    if (data.hasOwnProperty('showFlip')) {
-        if (data.showFlip.toLowerCase() === 'false') {
-            showFlip = false;
-        }
-    }
+    let showFlip = false;
+    // if (data.hasOwnProperty('showFlip')) {
+    //     if (data.showFlip.toLowerCase() === 'false') {
+    //         showFlip = false;
+    //     }
+    // }
 
     let showUndo = false;
     // if (data.hasOwnProperty('showUndo')) {
@@ -1930,6 +1940,7 @@ function drawFields(name) {
         let shapeArr = shape.value.split(' ');
         let ctx = f.getContext("2d");
         ctx.clearRect(0, 0, f.width, f.height);
+        
         ctx.drawImage(img, 0, 0, f.width, f.height);
 
         if (shapeArr[0].toLowerCase() === 'rect') {
@@ -1955,9 +1966,9 @@ function drawFields(name) {
                 let radius = 5;
                 let drawType = shapeArr[0].toLowerCase()
                 if (drawType === 'circle') {  // Should only be for auton start pos {Circle: ctx.arc(centerX, centerY, shapeArr[1], 0, 2 * Math.PI, false);}
-                    let x_level = (centerX < 150 && centerX >= 110) ? 110 : ((centerX > 150 && centerX <= 190) ? 150 : -1);
+                    let x_level = (centerX < 150 && centerX >= 105) ? 105 : ((centerX > 150 && centerX <= 195) ? 150 : -1);
                     let y_level;
-                    if (x_level === -1) { continue; }
+                    if (x_level === -1 || (x_level == 105 && getRobot().charAt(0) === "r") || (x_level == 150 && getRobot().charAt(0) === "b")) { continue; }
                     if (centerY < 50) {
                         y_level = 0
                     } else if (centerY < 100) {
@@ -1965,7 +1976,7 @@ function drawFields(name) {
                     } else {
                         y_level = 100
                     }
-                    ctx.rect(x_level, y_level, 40, 50);
+                    ctx.rect(x_level, y_level, 45, 50);
                 } else if (drawType === 'rect') {
                     try {
                         for (let i = 0; i < 12; i++) {
@@ -2209,9 +2220,9 @@ function onFieldClick(event) {
     //anthony alert(centerX + " " + centerY);
     let x_level;
     let field_component = document.getElementById('canvas' + base)
-    if (110 <= centerX && centerX < 150) {
+    if (105 <= centerX && centerX < 150 && getRobot().charAt(0) === "b") {
         x_level = 0
-    } else if (150 < centerX && centerX <= 190) {
+    } else if (150 < centerX && centerX <= 195 && getRobot().charAt(0) === "r") {
         x_level = 1;
     } else {
         //        field_component.removeAttribute('grid_coords')
@@ -2261,6 +2272,7 @@ function undo(event) {
 
 // Flips image
 function flip(event) {
+    isFlipped = !isFlipped;
     let flipID = event.firstChild;
     let flipImg = document.getElementById("canvas" + getIdBase(flipID.id));
     if (flipImg.style.transform === "") {
@@ -2268,6 +2280,14 @@ function flip(event) {
     } else {
         flipImg.style.transform = '';
     }
+
+    let img = document.getElementById('canvas_cycleascoreloc')
+    if (img.style.transform === "") {
+        img.style.transform = 'rotate(180deg)';
+    } else {
+        img.style.transform = '';
+    }
+
     drawFields();
 }
 
