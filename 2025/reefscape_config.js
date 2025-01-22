@@ -80,7 +80,7 @@ const config_data = `
             "type": "bool"
         },
         {
-            "name": "Auton Notes",
+            "name": "Auto Notes",
             "code": "an",
             "type": "text",
             "size": 15,
@@ -101,44 +101,17 @@ const config_data = `
             "type": "timer"
         },
         {
-            "name": "Shots blocked",
-            "code": "sb",
-            "type": "counter"
-        },
-        {
             "name": "Was Defended",
             "code": "wd",
             "type": "bool"
         },
         {
-            "name": "Failed Collections",
-            "code": "fc",
-            "type": "counter"
-        },
-        {
-            "name": "HP Ground",
-            "code": "hpg",
-            "type": "bool"
-        },
-        {
-            "name": "HP Other",
-            "code": "hpo",
-            "type": "bool"
-        },
-        {
-            "name": "Ground",
-            "code": "gr",
-            "type": "bool"
-        },
-        {
-            "name": "O.G. Auton",
-            "code": "oga",
-            "type": "bool"
-        },
-        {
-            "name": "Alliance Partner",
-            "code": "al",
-            "type": "bool"
+            "name": "Teleop Notes",
+            "code": "tn",
+            "type": "text",
+            "size": 15,
+	        "defaultValue": "",
+            "maxSize": 100
         },
         {
             "name": "Bicycle",
@@ -149,36 +122,29 @@ const config_data = `
     ],
     "endgame": [
         {
-            "name": "Stage Timer",
-            "code": "st",
-            "type": "timer"
-        },
-        {
-            "name": "Final Status",
-            "code": "fs",
+            "name": "Barge Status",
+            "code": "bs",
             "type": "radio",
             "choices": {
+                "s": "Shallow",
+                "fs": "Failed<br>",
+                "d": "&nbsp;Deep &nbsp;",
+                "fd": "Failed<br>",
                 "p": "Parked<br>",
-                "o": "Onstage<br>",
-                "s": "Onstage (Spotlit)<br>",
-                "x": "NOOB"
+                "x": "n/a"
             },
             "defaultValue": "x"
         },
         {
-            "name": "Trap",
-            "code": "ts",
-            "type": "counter"
-        },
-        {
-            "name": "Failed Trap",
-            "code": "ft",
-            "type": "counter"
-        },
-        {
-            "name": "Harmony",
-            "code": "ha",
-            "type": "counter"
+            "name": "Fail Reason",
+            "code": "fr",
+            "type": "radio",
+            "choices": {
+                "t": "Time trouble<br>",
+                "m": "Mechanism failure<br>",
+                "x": "n/a"
+            },
+            "defaultValue": "x"
         }
     ],
     "postmatch": [
@@ -206,37 +172,17 @@ const config_data = `
             "defaultValue": "x"
         },
         {
-            "name": "Tippy-ness<br>(5 = died/tipped)",
+            "name": "Tippiness",
             "code": "tip",
             "type": "radio",
             "choices": {
-                "a": "0 ",
-                "b": "1 ",
-                "c": "2 ",
-                "d": "3 ",
-                "e": "4 ",
-                "f": "5 "
+                "0": "Solid<br>",
+                "1": "<br>",
+                "2": "<br>",
+                "3": "<br>",
+                "4": "Tipped"
             },
-            "defaultValue": "a"
-        },
-        {
-            "name": "Coop Bonus",
-            "code": "cp",
-            "type": "bool"
-        },
-        {
-            "name": "Ranking Points",
-            "code": "rp",
-            "type": "text",
-            "size": 3,
-            "maxSize": 3
-        },
-        {
-            "name": "Final Match Score",
-            "code": "fms",
-            "type": "text",
-            "size": 3,
-            "maxSize": 3
+            "defaultValue": "2"
         },
         {
             "name": "Notes",

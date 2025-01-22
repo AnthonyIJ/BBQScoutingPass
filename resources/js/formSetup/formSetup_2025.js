@@ -190,9 +190,11 @@ function clearCycle(code_identifier) {
         e.value = "[]"
     }
 
-    let scoreloc_component = document.getElementById('canvas_' + code_identifier + 'scoreloc')
-    console.log(scoreloc_component)
-    scoreloc_component.setAttribute('grid_coords', null)
+    if (code_identifier.endsWith('a')) {
+        let scoreloc_component = document.getElementById('canvas_' + code_identifier + 'scoreloc')
+        console.log(scoreloc_component)
+        scoreloc_component.setAttribute('grid_coords', null)
+    }
     // inputs = new Set(document.querySelectorAll("[tag='canvas']"));
     // for (let e of inputs) {
     //   if (e.getAttribute('grid_coords') !== undefined && e.getAttribute('grid_coords') !== null) {
@@ -427,9 +429,9 @@ function addBicycle(table, idx, name, data) { // TODO: update for 2025 season
         idx = addRadio(table, idx, source_data.name, source_data) // Source
     }
 
-    // Add Score Location component
+    // Add Score Location component (name used to have "Score Location")
     let score_loc_data = JSON.parse(`{
-      "name": "Score Location:",
+      "name": "",
       "code": "${code_identifier}scoreloc",
       "type": "scoreloc",
       "filename": "2025/field_image.png",
@@ -1842,7 +1844,7 @@ function clearForm() {
             if (code === "s") continue
 
             if (code === "r") {
-                e.value = undefined;
+                //e.value = undefined;
                 continue;
             }
 
@@ -1946,7 +1948,7 @@ function drawFields(name) {
         let shapeArr = shape.value.split(' ');
         let ctx = f.getContext("2d");
         ctx.clearRect(0, 0, f.width, f.height);
-        
+
         ctx.drawImage(img, 0, 0, f.width, f.height);
 
         if (shapeArr[0].toLowerCase() === 'rect') {
