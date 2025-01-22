@@ -24,10 +24,10 @@ function moveTouch(e) {
     // sliding horizontally
     if (diffX / screen.width > xThreshold) {
         // swiped left
-        swipePage(1);
+        //swipePage(1);
     } else if (diffX / screen.width < -xThreshold) {
         // swiped right
-        swipePage(-1);
+        //swipePage(-1);
     }
     initialX = null;
 }
