@@ -5,6 +5,7 @@ let requiredFields = ["e", "m", "l", "r", "s", "t", "as"];  // What are these ag
 let prev_cycle_end_time = null
 let cycles = []
 let isFlipped = false;
+let recordTeleopCycleTime = false;
 
 // Cycle class
 class Cycle {
@@ -392,8 +393,10 @@ function addBicycle(table, idx, name, data) { // TODO: update for 2025 season
     "code": "${code_identifier}reset_cycle_time",
     "type": "resetCycleTimeButton"
   }`)
-    //idx = addResetCycleTimeButton(table, idx, reset_cycle_time_button_data.name, reset_cycle_time_button_data, code_identifier)
-
+    if (code_identifier === bicycle_component_identifier + 't' && recordTeleopCycleTime) {
+        idx = addResetCycleTimeButton(table, idx, reset_cycle_time_button_data.name, reset_cycle_time_button_data, code_identifier)
+    }
+    
     let source_data;
     if (code_identifier === bicycle_component_identifier + 'a') { // Auton
         source_data = JSON.parse(`{ 
@@ -1772,7 +1775,11 @@ function getData(dataFormat) {
         zone_ids.push(zone_id)
         targets.push(cycle.target)
         statuses.push(cycle.status)
-        times.push(0)
+        if (cycle.gametime == 2 && recordTeleopCycleTime) {
+            times.push(cycle.time);
+        } else {
+            times.push(0);
+        }
     }
     // normal_data;gametimes;sources;zone_ids;targets;statuses;times
     //            |-> cycle data, in array format, delimiter = comma
