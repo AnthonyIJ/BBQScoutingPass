@@ -1728,11 +1728,13 @@ function getData(dataFormat) {
                 alert('Missing Auto Start Position!')
             }
             /*
-            0   3
-            1   4
-            2   5
+            0   5
+            1   6
+            2   7
+            3   8
+            4   9
              */
-            thisFieldValue = (parseInt(field_value.substring(0, 1)) * 3) + parseInt(field_value.substring(1, 2))
+            thisFieldValue = /*(parseInt(field_value.substring(0, 1)) * 5)*/ + parseInt(field_value.substring(1, 2))
         } else {
             thisFieldValue = thisField.value ? thisField.value.replace(/"/g, '').replace(/;/g, "-") : "";
         }
@@ -1743,11 +1745,6 @@ function getData(dataFormat) {
     });
     let gametimes = []
     let sources = []
-    /* Zone id chart
-       |f||e|
-    |a|      |d|
-       |b||c|
-    */
     let zone_ids = []
     let targets = []
     let statuses = []
@@ -1962,12 +1959,6 @@ function drawFields(name) {
             for (let i = 0; i < 12; i++) {
                 triangle(ctx, i, false);
             }
-
-            // drawRect(ctx, 135, 0, 30, 75, false);
-            // drawRect(ctx, 135, 75, 30, 75, false);
-
-            // drawRect(ctx, 95, 120, 40, 30, false);
-            // drawRect(ctx, 165, 0, 40, 30, false);
         }
 
         ctx.beginPath();
@@ -1984,14 +1975,18 @@ function drawFields(name) {
                     let x_level = (centerX < 150 && centerX >= 105) ? 105 : ((centerX > 150 && centerX <= 195) ? 150 : -1);
                     let y_level;
                     if (x_level === -1 || (x_level == 105 && getRobot().charAt(0) === "r") || (x_level == 150 && getRobot().charAt(0) === "b")) { continue; }
-                    if (centerY < 50) {
+                    if (centerY < 30) {
                         y_level = 0
-                    } else if (centerY < 100) {
-                        y_level = 50
-                    } else {
-                        y_level = 100
+                    } else if (centerY < 60) {
+                        y_level = 30
+                    } else if (centerY < 90){
+                        y_level = 60
+                    } else if (centerY < 120) {
+                        y_level = 90
+                    } else if (centerY < 150){
+                        y_level = 120
                     }
-                    ctx.rect(x_level, y_level, 45, 50);
+                    ctx.rect(x_level, y_level, 45, 30);
                 } else if (drawType === 'rect') {
                     try {
                         for (let i = 0; i < 12; i++) {
@@ -2000,20 +1995,6 @@ function drawFields(name) {
                                 return;
                             }
                         }
-                        // if (withinBounds(centerX, centerY, 135, 0, 30, 75)) {
-                        //     drawRect(ctx, 135, 0, 30, 75, true);
-                        //     return;
-                        // } else if (withinBounds(centerX, centerY, 135, 75, 30, 75)) {
-                        //     drawRect(ctx, 135, 75, 30, 75, true);
-                        //     return;
-                        // } else if (withinBounds(centerX, centerY, 95, 120, 40, 30)) {
-                        //     drawRect(ctx, 95, 120, 40, 30, true);
-                        //     return;
-                        // } else if (withinBounds(centerX, centerY, 165, 0, 40, 30)) {
-                        //     drawRect(ctx, 165, 0, 40, 30, true);
-                        //     return;
-                        // }
-
                     } catch (e) {
                         alert(e)
                     }
@@ -2046,53 +2027,6 @@ function withinBounds(x, y, minX, minY, width, height) {
     return (minX <= x && x <= minX + width) && (minY <= y && y <= minY + height);
 }
 
-// //       /--------BLUE-VALUES--------/----------RED-VALUES----------/ 
-// let y1 = [67,  93,  83,  53,  53,  32,  53,  53,  32,  67,  93,  83];
-// let x1 = [62,  77,  92, 111, 111,  77, 257, 257, 223, 208, 223, 238];
-// let x2 = [43,  62,  77,  92,  77,  43, 238, 223, 189, 189, 208, 223];
-// let y2 = [53,  83,  93,  67,  32,  52,  67,  32,  52,  53,  83,  93];
-// let x3 = [43,  43,  77,  92,  77,  62, 238, 223, 208, 189, 189, 223];
-// let y3 = [93,  93, 118,  83,  57,  66,  83,  57,  66,  93,  93, 118];
-// let x4 = [62,  77, 111, 111,  92,  77, 257, 238, 223, 208, 223, 257];
-// let y4 = [83, 118,  93,  93,  67,  57,  93,  67,  57,  83, 118,  93];
-
-// function trapezoid(ctx, idx, fill) {
-
-//     ctx.beginPath();
-//     ctx.moveTo(x1[idx], y1[idx]);
-//     ctx.lineTo(x2[idx], y2[idx]);
-//     ctx.lineTo(x3[idx], y3[idx]);
-//     ctx.lineTo(x4[idx], y4[idx]);
-//     ctx.closePath();
-
-//     ctx.strokeStyle = '#FFFFFF';
-//     ctx.stroke();
-//     if (fill) {
-//         ctx.fillStyle = 'rgba(255, 165, 0, 0.2)';
-//         ctx.fill();
-//     }
-// }
-
-// function withinTrapezoid(x, y, idx) {
-//     let signedArea = 0.5 * (x1[idx]*y2[idx] + x2[idx]*y3[idx] + x3[idx]*y4[idx] + x4[idx]*y1[idx] - (y1[idx]*x2[idx] + y2[idx]*x3[idx] + y3[idx]*x4[idx] + y4[idx]*x1[idx]));
-
-//     let a = 0.5 * (x*(y1[idx]-y2[idx]) + x1[idx]*(y2[idx]-y) + x2[idx]*(y-y1[idx]));
-//     if (signum(a) != signum(signedArea)) return false;
-
-//     let b = 0.5 * (x*(y2[idx]-y3[idx]) + x2[idx]*(y3[idx]-y) + x3[idx]*(y-y2[idx]));
-//     if (signum(b) != signum(signedArea)) return false;
-
-//     let c = 0.5 * (x*(y3[idx]-y4[idx]) + x3[idx]*(y4[idx]-y) + x4[idx]*(y-y3[idx]));
-//     if (signum(c) != signum(signedArea)) return false;
-
-//     let d = 0.5 * (x*(y4[idx]-y1[idx]) + x4[idx]*(y1[idx]-y) + x1[idx]*(y-y4[idx]));
-//     if (signum(d) != signum(signedArea)) return false;
-
-
-
-//     return signedArea == a+b+c+d;
-// }
-
 let reefCenterX = [77, 223];
 let reefCenterY = [75, 75];
 //       / BLUE VALUES                               / RED VALUES                                    /
@@ -2113,7 +2047,6 @@ function triangle(ctx, idx, fill) {
     if (fill) {
         ctx.fillStyle = 'rgba(255, 165, 0, 0.2)';
         ctx.fill();
-        //alert("woohoo");
     }
 }
 
@@ -2149,7 +2082,6 @@ function drawRect(ctx, x, y, width, height, fill) {
     if (fill) {
         ctx.fillStyle = 'rgba(255, 165, 0, 0.2)';
         ctx.fill();
-        //alert("woohoo");
     }
 }
 
@@ -2245,12 +2177,16 @@ function onFieldClick(event) {
         return;
     }
     let y_level;
-    if (centerY < 50) {
+    if (centerY < 30) {
         y_level = 0
-    } else if (centerY < 100) {
+    } else if (centerY < 60) {
         y_level = 1
-    } else {
+    } else if (centerY < 90) {
         y_level = 2
+    } else if (centerY < 120) {
+        y_level = 3
+    } else if (centerY < 150) {
+        y_level = 4
     }
     field_component.setAttribute('grid_coords', `${x_level}${y_level}`)
     drawFields()
