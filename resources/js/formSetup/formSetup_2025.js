@@ -1739,7 +1739,7 @@ function getData(dataFormat) {
         fd.append(fieldname, thisFieldValue)
     })
     Array.from(fd.keys()).forEach(thisKey => {
-        strArray.push(thisKey + "=" + fd.get(thisKey))
+        strArray.push(/*thisKey + "=" + */fd.get(thisKey))
     });
     let gametimes = []
     let sources = []
@@ -1783,7 +1783,7 @@ function getData(dataFormat) {
     }
     // normal_data;gametimes;sources;zone_ids;targets;statuses;times
     //            |-> cycle data, in array format, delimiter = comma
-    return `${strArray.join(";")};gat=[${gametimes.join(',')}];src=[${sources.join(',')}];zis=[${zone_ids.join(',')}];tar=[${targets.join(',')}];sts=[${statuses.join(',')}];tim=[${times.join(',')}]`
+    return `${strArray.join("|")}|${gametimes.join(',')}|${sources.join(',')}|${zone_ids.join(',')}|${targets.join(',')}|${statuses.join(',')}|${times.join(',')}`
 }
 
 // Returns a boolean: whether data in form is valid or not

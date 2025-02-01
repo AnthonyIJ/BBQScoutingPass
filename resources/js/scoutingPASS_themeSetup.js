@@ -1,7 +1,8 @@
 // === Themes ===
-let stylesheetIdx = 0
+let stylesheetIdx = 0;
 let rgbIntervalIdx;
 function nextStylesheet() {
+    //alert(((document.getElementById("input_s").value == "LY") ? 1 : ((document.getElementById("input_s").value == "AP") ? 2 : 0)));
     let stylesheet = document.getElementById('stylesheet');
     if (stylesheetIdx === 0) {
         stylesheet.href = "resources/css/bbqScoutingPASS.css";
