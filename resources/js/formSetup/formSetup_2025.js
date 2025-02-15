@@ -13,8 +13,8 @@ class Cycle {
         ["p1", "1"],
         ["p2", "2"],
         ["p3", "3"],
-        ["cs", "cs"],
-        ["os", "os"],
+        ["cs", "c"],
+        ["os", "o"],
         ["pl", "p"],// preload
         ['x', "x"] //no source
     ])

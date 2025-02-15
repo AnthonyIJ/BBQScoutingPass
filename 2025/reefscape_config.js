@@ -106,6 +106,11 @@ const config_data = `
             "type": "bool"
         },
         {
+            "name": "Fouls",
+            "code": "fo",
+            "type": "counter"
+        },
+        {
             "name": "Teleop Notes",
             "code": "tn",
             "type": "text",
@@ -152,11 +157,6 @@ const config_data = `
             "name": "Was Fouled",
             "code": "wf",
             "type": "bool"
-        },
-        {
-            "name": "Fouls",
-            "code": "fo",
-            "type": "counter"
         },
         {
             "name": "Defense Rating",
