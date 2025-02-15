@@ -163,10 +163,10 @@ const config_data = `
             "code": "dr",
             "type": "radio",
             "choices": {
-                "b": "Below Average<br>",
-                "a": "Average<br>",
-                "g": "Good<br>",
-                "e": "Excellent<br>",
+                "0": "Below Average<br>",
+                "1": "Average<br>",
+                "2": "Good<br>",
+                "3": "Excellent<br>",
                 "x": "Did not play defense"
             },
             "defaultValue": "x"
@@ -176,11 +176,11 @@ const config_data = `
             "code": "tip",
             "type": "radio",
             "choices": {
-                "0": "Solid<br>",
-                "1": "<br>",
-                "2": "<br>",
+                "4": "Solid<br>",
                 "3": "<br>",
-                "4": "Tipped"
+                "2": "<br>",
+                "1": "<br>",
+                "0": "Tipped"
             },
             "defaultValue": "2"
         },
