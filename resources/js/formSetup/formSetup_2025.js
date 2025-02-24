@@ -111,11 +111,13 @@ function saveCycle(code_identifier, successful) {
     if (code_identifier.endsWith('a')) {
         src = Form[`${code_identifier}src`]
         src_value = Cycle.src_condense_map.get(src.value ? src.value.replace(/"/g, '').replace(/;/g, "-") : "");
-        if (isFlipped) {
-            src_value = -src_value + 4;
-        }
-        if (getRobot().charAt(0) === 'r') {
-            src_value = -src_value + 4;
+        if (Number.isInteger(src_value)) {
+            if (isFlipped) {
+                src_value = -src_value + 4;
+            }
+            if (getRobot().charAt(0) === 'r') {
+                src_value = -src_value + 4;
+            }
         }
 
     } else {
