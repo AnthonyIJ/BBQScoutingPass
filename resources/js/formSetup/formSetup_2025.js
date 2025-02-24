@@ -112,18 +112,10 @@ function saveCycle(code_identifier, successful) {
         src = Form[`${code_identifier}src`]
         src_value = Cycle.src_condense_map.get(src.value ? src.value.replace(/"/g, '').replace(/;/g, "-") : "");
         if (isFlipped) {
-            if (src_value == 1) {
-                src_value = 3;
-            } else if (src_value == 3) {
-                src_value = 1;
-            }
+            src_value = -src_value + 4;
         }
         if (getRobot().charAt(0) === 'r') {
-            if (src_value == 1) {
-                src_value = 3;
-            } else if (src_value == 3) {
-                src_value = 1;
-            }
+            src_value = -src_value + 4;
         }
 
     } else {
@@ -1728,13 +1720,16 @@ function getData(dataFormat) {
                 alert('Missing Auto Start Position!')
             }
             /*
-            0   5
-            1   6
-            2   7
-            3   8
-            4   9
+            0   4
+            1   3
+            2   2
+            3   1
+            4   0
              */
-            thisFieldValue = /*(parseInt(field_value.substring(0, 1)) * 5)*/ + parseInt(field_value.substring(1, 2))
+            thisFieldValue = /*(parseInt(field_value.substring(0, 1)) * 5)*/ + parseInt(field_value.substring(1, 2));
+            if (getRobot().charAt(0) === 'r') {
+                thisFieldValue = -thisFieldValue + 4;
+            }
         } else {
             thisFieldValue = thisField.value ? thisField.value.replace(/"/g, '').replace(/;/g, "-") : "";
         }
@@ -1955,13 +1950,22 @@ function drawFields(name) {
 
         ctx.drawImage(img, 0, 0, f.width, f.height);
 
+        ctx.beginPath();
+        ctx.strokeStyle = '#FFFFFF';
+
         if (shapeArr[0].toLowerCase() === 'rect') {
             for (let i = 0; i < 12; i++) {
                 triangle(ctx, i, false);
             }
+        } else {
+            for (let x = 105; x < 151; x += 45) {
+                for (let y = 0; y < 121; y += 30) {
+                    rectangle(ctx, x, y, 45, 30, false);
+                }
+            }
         }
 
-        ctx.beginPath();
+
         let xyStr = document.getElementById("XY_" + code).value
         if (JSON.stringify(xyStr).length > 2) {
             let pts = Array.from(JSON.parse(xyStr))
@@ -1986,7 +1990,7 @@ function drawFields(name) {
                     } else if (centerY < 150){
                         y_level = 120
                     }
-                    ctx.rect(x_level, y_level, 45, 30);
+                    rectangle(ctx, x_level, y_level, 45, 30, true);
                 } else if (drawType === 'rect') {
                     try {
                         for (let i = 0; i < 12; i++) {
@@ -2041,6 +2045,18 @@ function triangle(ctx, idx, fill) {
     ctx.lineTo(x1[idx], y1[idx]);
     ctx.lineTo(x2[idx], y2[idx]);
     ctx.closePath();
+
+    ctx.strokeStyle = '#FFFFFF';
+    ctx.stroke();
+    if (fill) {
+        ctx.fillStyle = 'rgba(255, 165, 0, 0.2)';
+        ctx.fill();
+    }
+}
+
+function rectangle(ctx, x, y, width, height, fill) {
+    ctx.beginPath();
+    ctx.rect(x, y, width, height);
 
     ctx.strokeStyle = '#FFFFFF';
     ctx.stroke();

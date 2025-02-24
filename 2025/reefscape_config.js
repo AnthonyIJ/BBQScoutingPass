@@ -111,12 +111,9 @@ const config_data = `
             "type": "counter"
         },
         {
-            "name": "Teleop Notes",
-            "code": "tn",
-            "type": "text",
-            "size": 15,
-	        "defaultValue": "",
-            "maxSize": 100
+            "name": "Algae Removal",
+            "code": "ar",
+            "type": "counter"
         },
         {
             "name": "Bicycle",
@@ -180,7 +177,7 @@ const config_data = `
                 "3": "<br>",
                 "2": "<br>",
                 "1": "<br>",
-                "0": "Tipped"
+                "0": "Tipped<br>"
             },
             "defaultValue": "2"
         },
