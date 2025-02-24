@@ -111,11 +111,13 @@ function saveCycle(code_identifier, successful) {
     if (code_identifier.endsWith('a')) {
         src = Form[`${code_identifier}src`]
         src_value = Cycle.src_condense_map.get(src.value ? src.value.replace(/"/g, '').replace(/;/g, "-") : "");
-        if (isFlipped) {
-            src_value = -src_value + 4;
-        }
-        if (getRobot().charAt(0) === 'r') {
-            src_value = -src_value + 4;
+        if (Number.isInteger(src_value)) {
+            if (isFlipped) {
+                src_value = -src_value + 4;
+            }
+            if (getRobot().charAt(0) === 'r') {
+                src_value = -src_value + 4;
+            }
         }
 
     } else {
@@ -388,7 +390,7 @@ function addBicycle(table, idx, name, data) { // TODO: update for 2025 season
     if (code_identifier === bicycle_component_identifier + 't' && recordTeleopCycleTime) {
         idx = addResetCycleTimeButton(table, idx, reset_cycle_time_button_data.name, reset_cycle_time_button_data, code_identifier)
     }
-    
+
     let source_data;
     if (code_identifier === bicycle_component_identifier + 'a') { // Auton
         source_data = JSON.parse(`{ 
@@ -1918,13 +1920,14 @@ function clearForm() {
         if (break_component.hasAttribute("prev_cycle_end_time")) {
             break_component.removeAttribute("prev_cycle_end_time")
         }
-
+        /*
         break_component = document.getElementById(`break_${teleop_specifier}break`)
         break_component.setAttribute("nof_cycles", "0")
         if (break_component.hasAttribute("prev_cycle_end_time")) {
             break_component.removeAttribute("prev_cycle_end_time")
         }
         break_component.innerHTML = `Teleop Cycle Form (${break_component.getAttribute("nof_cycles")}):` + '&nbsp;';
+        */
 
         clearCycle(auton_specifier)
         clearCycle(teleop_specifier)
@@ -1983,11 +1986,11 @@ function drawFields(name) {
                         y_level = 0
                     } else if (centerY < 60) {
                         y_level = 30
-                    } else if (centerY < 90){
+                    } else if (centerY < 90) {
                         y_level = 60
                     } else if (centerY < 120) {
                         y_level = 90
-                    } else if (centerY < 150){
+                    } else if (centerY < 150) {
                         y_level = 120
                     }
                     rectangle(ctx, x_level, y_level, 45, 30, true);

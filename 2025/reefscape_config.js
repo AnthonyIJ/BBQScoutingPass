@@ -116,10 +116,34 @@ const config_data = `
             "type": "counter"
         },
         {
-            "name": "Bicycle",
-            "code": "teleopbicycle",
-            "type": "bicycle",
-            "bicycle_id": "teleop"
+            "name": "Net",
+            "code": "net",
+            "type": "counter"
+        },
+        {
+            "name": "Processor",
+            "code": "pro",
+            "type": "counter"
+        },
+        {
+            "name": "L4",
+            "code": "l4",
+            "type": "counter"
+        },
+        {
+            "name": "L3",
+            "code": "l3",
+            "type": "counter"
+        },
+        {
+            "name": "L2",
+            "code": "l2",
+            "type": "counter"
+        },
+        {
+            "name": "L1",
+            "code": "l1",
+            "type": "counter"
         }
     ],
     "endgame": [
