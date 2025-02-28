@@ -1774,7 +1774,8 @@ function getData(dataFormat) {
     }
     // normal_data;gametimes;sources;zone_ids;targets;statuses;times
     //            |-> cycle data, in array format, delimiter = comma
-    return `${strArray.join("|")}|${gametimes.join(',')}|${sources.join(',')}|${zone_ids.join(',')}|${targets.join(',')}|${statuses.join(',')}|${times.join(',')}`
+    return `${strArray.join("|")}|${zone_ids.join(',')}|${targets.join(',')}|${statuses.join(',')}`
+    //return `${strArray.join("|")}|${gametimes.join(',')}|${sources.join(',')}|${zone_ids.join(',')}|${targets.join(',')}|${statuses.join(',')}|${times.join(',')}`
 }
 
 // Returns a boolean: whether data in form is valid or not
