@@ -450,7 +450,7 @@ function addBicycle(table, idx, name, data) { // TODO: update for 2025 season
     "L2": "L2<br>",
     "L1": "L1<br>"
    },
-   "defaultValue": "L1"
+   "defaultValue": "L4"
   }`)
     idx = addRadio(table, idx, target_data.name, target_data)  // Target
 
