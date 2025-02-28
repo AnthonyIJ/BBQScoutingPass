@@ -62,6 +62,7 @@ function nextSuccessfulCycle(code_identifier) {
     }
 
     let undefined_vars = saveCycle(code_identifier, 1)  // TODO: What is this
+    //anthony
     if (undefined_vars.length > 0) {  // More than 0 undefined vars
         alert(`Missing fields in ${cycleText} Cycle Form: ${undefined_vars.join(', ')}`)
         return
@@ -105,25 +106,23 @@ function nextFailedCycle(code_identifier) {
 // Called on next_Cycle; saves the cycle, returns undefined variables?
 function saveCycle(code_identifier, successful) {
     let Form = document.forms.scoutingForm;
-
-    let src;
-    let src_value;
-    if (code_identifier.endsWith('a')) {
-        src = Form[`${code_identifier}src`]
-        src_value = Cycle.src_condense_map.get(src.value ? src.value.replace(/"/g, '').replace(/;/g, "-") : "");
-        if (Number.isInteger(src_value)) {
-            if (isFlipped) {
-                src_value = -src_value + 4;
-            }
-            if (getRobot().charAt(0) === 'r') {
-                src_value = -src_value + 4;
-            }
-        }
-
-    } else {
-        src = "x"
-        src_value = "x"
-    }
+    let src = "x";
+    let src_value = "x";
+    // if (code_identifier.endsWith('a')) {
+    //     src = Form[`${code_identifier}src`]
+    //     src_value = Cycle.src_condense_map.get(src.value ? src.value.replace(/"/g, '').replace(/;/g, "-") : "");
+    //     if (Number.isInteger(src_value)) {
+    //         if (isFlipped) {
+    //             src_value = -src_value + 4;
+    //         }
+    //         if (getRobot().charAt(0) === 'r') {
+    //             src_value = -src_value + 4;
+    //         }
+    //     }
+    // } else {
+    //     src = "x"
+    //     src_value = "x"
+    // }
 
     let scoreloc;
     let scoreloc_value;
@@ -422,9 +421,9 @@ function addBicycle(table, idx, name, data) { // TODO: update for 2025 season
      "defaultValue": "hpg"
      }`)
     }
-    if (code_identifier === bicycle_component_identifier + 'a') {
-        idx = addRadio(table, idx, source_data.name, source_data) // Source
-    }
+    // if (code_identifier === bicycle_component_identifier + 'a') {
+    //     idx = addRadio(table, idx, source_data.name, source_data) // Source
+    // }
 
     // Add Score Location component (name used to have "Score Location")
     let score_loc_data = JSON.parse(`{
@@ -446,10 +445,8 @@ function addBicycle(table, idx, name, data) { // TODO: update for 2025 season
    "code": "${code_identifier}tar",
    "type": "radio",
    "choices": {
-    "L4": "L4",
-    "pro": "Processor<br>",
-    "L3": "L3",
-    "net": "Net<br>",
+    "L4": "L4<br>",
+    "L3": "L3<br>",
     "L2": "L2<br>",
     "L1": "L1<br>"
    },
