@@ -18,7 +18,7 @@ const config_data = `
             "name": "Event",
             "code": "e",
             "type": "event",
-            "defaultValue": "2025txwac",
+            "defaultValue": "2025txfor",
             "required": "true"
         },
         {
