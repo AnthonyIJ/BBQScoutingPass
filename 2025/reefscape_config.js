@@ -184,10 +184,10 @@ const config_data = `
             "code": "dr",
             "type": "radio",
             "choices": {
-                "0": "Ineffective (blocked 1 robot once, many fouls, etc.)<br>",
-                "1": "Blocked 1 coral station with some fouls<br>",
-                "2": "Blocked 1 coral station with little fouls<br>",
-                "3": "Blocked 2 coral stations with little fouls<br>",
+                "0": "Ineffective<br>",
+                "1": "1 coral station, some fouls<br>",
+                "2": "1 coral station, little fouls<br>",
+                "3": "2 coral stations, little fouls<br>",
                 "x": "Did not play defense"
             },
             "defaultValue": "x"
