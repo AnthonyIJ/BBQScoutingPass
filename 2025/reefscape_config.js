@@ -185,9 +185,9 @@ const config_data = `
             "type": "radio",
             "choices": {
                 "0": "Ineffective<br>",
-                "1": "1 coral station, some fouls<br>",
-                "2": "1 coral station, little fouls<br>",
-                "3": "2 coral stations, little fouls<br>",
+                "1": "2-4 fouls<br>",
+                "2": "1 coral station, 0-1 fouls<br>",
+                "3": "2 coral stations, 0-1 fouls<br>",
                 "x": "Did not play defense"
             },
             "defaultValue": "x"
