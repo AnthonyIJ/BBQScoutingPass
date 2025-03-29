@@ -184,33 +184,27 @@ const config_data = `
             "code": "dr",
             "type": "radio",
             "choices": {
-                "0": "Below Average<br>",
-                "1": "Average<br>",
-                "2": "Good<br>",
-                "3": "Excellent<br>",
+                "0": "Ineffective (blocked 1 robot once, many fouls, etc.)<br>",
+                "1": "Blocked 1 coral station with some fouls<br>",
+                "2": "Blocked 1 coral station with little fouls<br>",
+                "3": "Blocked 2 coral stations with little fouls<br>",
                 "x": "Did not play defense"
             },
             "defaultValue": "x"
         },
         {
-            "name": "Tippiness",
-            "code": "tip",
-            "type": "radio",
-            "choices": {
-                "4": "Solid<br>",
-                "3": "<br>",
-                "2": "<br>",
-                "1": "<br>",
-                "0": "Tipped<br>"
-            },
-            "defaultValue": "2"
+            "name": "Justification for Def. Rating",
+            "code": "j",
+            "type": "text",
+            "size": 15,
+            "maxSize": 300
         },
         {
             "name": "Notes",
             "code": "co",
             "type": "text",
             "size": 15,
-            "maxSize": 100
+            "maxSize": 300
         }
     ]
 }`;
